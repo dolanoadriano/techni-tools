@@ -1,0 +1,38 @@
+{
+  "name": "@techni-tools/react-cli",
+  "version": "0.0.1",
+  "description": "A tool that facilitates the creation of React components.",
+  "author": "dolanoadriano <adriantrabka98@gmail.com>",
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/react-cli.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "test": "node ./__tests__/react-cli.test.js",
+    "build": "tsc"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "techni-tools rc": "./lib/bin/index.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1",
+    "react": "^18.2.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "enquirer": "^2.3.6",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "zod": "^3.21.4"
+  }
+}
