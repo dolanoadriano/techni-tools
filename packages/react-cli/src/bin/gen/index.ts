@@ -3,7 +3,12 @@ import { program } from "commander";
 import { build } from "../../core";
 import { generateOptionsSchema } from "../../schemas";
 import { Config, GenerateOptions } from "../../types";
-import { loadConfigOrExit, onlyUnique, toPascalCase } from "../../utils";
+import {
+  loadConfig,
+  loadConfigOrExit,
+  onlyUnique,
+  toPascalCase,
+} from "../../utils";
 import { loadOptionsFromPrompt } from "./prompt";
 
 const loadOptionsFromArgs = (
@@ -44,7 +49,7 @@ const handleAction = async (options: unknown) => {
 
 const createGenCommand = () => {
   const currentDir = process.cwd();
-  const config = loadConfigOrExit(currentDir);
+  const config = loadConfig(currentDir);
 
   return program
     .command("gen")
@@ -52,7 +57,7 @@ const createGenCommand = () => {
     .option(
       `-t, --type <fc|class>`,
       "type of component",
-      config.defaultComponentType
+      config?.defaultComponentType
     )
     .option(`-n, --name <name...>`, "name of component")
     .option(`-pl --props-list [props...]`, "list of props")
