@@ -22,7 +22,7 @@ const handleAction = async (options: any) => {
 
 const createInitCommand = () => {
   return program
-    .command("init")
+    .command("init", { isDefault: true })
     .description("initialization config file")
     .option(`-y --yes`)
     .option(`-plng --programing-language <js|ts>`, "programming language")
