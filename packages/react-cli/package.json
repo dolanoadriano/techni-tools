@@ -18,10 +18,12 @@
   ],
   "scripts": {
     "test": "node ./__tests__/react-cli.test.js",
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "npm run build"
   },
   "preferGlobal": true,
   "bin": {
+    "techni-tools react-cli": "./lib/bin/index.js",
     "techni-tools rc": "./lib/bin/index.js"
   },
   "devDependencies": {
