@@ -22,11 +22,11 @@ pnpm add @techni-tools/react-cli -g
 2. From the terminal, enter:
 
 ```
-techni-tools rc init -y
+techni-tools-rc init -y
 ```
 
 ## Usage
 
 ```
-techni-tools rc gen
+techni-tools-rc gen
 ```

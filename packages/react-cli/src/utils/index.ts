@@ -88,7 +88,7 @@ export const loadConfigOrExit = (currentDir: string): Config => {
   const config = loadConfig(currentDir);
   if (!config) {
     console.error(
-      "The configuration file does not exists. \nRun command: 'techni-tools rc init'"
+      "The configuration file does not exists. \nRun command: 'techni-tools-rc init'"
     );
     process.exit(1);
   }
