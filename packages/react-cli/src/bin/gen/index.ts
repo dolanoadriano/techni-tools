@@ -11,6 +11,22 @@ import {
 } from "../../utils";
 import { loadOptionsFromPrompt } from "./prompt";
 
+function convertToPascalCase(text: string): string {
+  const fragments = text.split("/");
+  const lastFragment = fragments.pop();
+
+  if (lastFragment) {
+    const words = lastFragment.split(" ");
+    const pascalCaseWords = words.map(
+      (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+    );
+    const pascalCaseText = pascalCaseWords.join("");
+    fragments.push(pascalCaseText);
+  }
+
+  return fragments.join("/");
+}
+
 const loadOptionsFromArgs = (
   config: Config,
   commandOptions: any
@@ -20,7 +36,7 @@ const loadOptionsFromArgs = (
   if (!names || !Array.isArray(names)) return undefined;
 
   const manyUnverifiedOptions = names.filter(onlyUnique).map((name) => ({
-    name: toPascalCase(name).trim(),
+    name: convertToPascalCase(name).trim(),
     ...restCommandOptions,
   }));
 
