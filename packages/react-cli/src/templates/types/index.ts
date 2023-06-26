@@ -28,7 +28,7 @@ const typesBuilder = (options: {
   return `
   ${
     propsList?.includes("style") || propsList?.includes("children")
-      ? `import { React } from "react"`
+      ? `import React from "react"`
       : ``
   }
 
