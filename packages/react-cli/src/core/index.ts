@@ -14,9 +14,9 @@ export const build = async (
   options: GenerateOptions
 ) => {
   const { componentsOutDir, programmingLang, stylingLang } = config;
-  const { type, name: _name, propsList, isFaCC, isGeneric } = options;
-  const name = getComponentNameFromPath(_name);
-  const componentDir = path.join(currentDir, componentsOutDir, name);
+  const { type, name: p, propsList, isFaCC, isGeneric } = options;
+  const name = getComponentNameFromPath(p);
+  const componentDir = path.join(currentDir, componentsOutDir, p);
 
   if (fs.existsSync(componentDir)) {
     console.error(`Component '${name}' already exists`);
