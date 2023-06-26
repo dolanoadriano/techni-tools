@@ -16,11 +16,7 @@ function convertToPascalCase(text: string): string {
   const lastFragment = fragments.pop();
 
   if (lastFragment) {
-    const words = lastFragment.split(" ");
-    const pascalCaseWords = words.map(
-      (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
-    );
-    const pascalCaseText = pascalCaseWords.join("");
+    const pascalCaseText = toPascalCase(lastFragment);
     fragments.push(pascalCaseText);
   }
 
