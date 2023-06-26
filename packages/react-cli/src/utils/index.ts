@@ -17,6 +17,12 @@ export const toPascalCase = (text: string): string => {
   return text;
 };
 
+export const getComponentNameFromPath = (path: string) => {
+  const fragments = path.split("/");
+  const lastFragment = fragments.pop();
+  return toPascalCase(lastFragment || path);
+};
+
 export function onlyUnique(value, index, array) {
   return array.indexOf(value) === index;
 }

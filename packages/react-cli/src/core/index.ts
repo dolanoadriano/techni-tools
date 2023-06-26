@@ -6,6 +6,7 @@ import indexBuilder from "../templates/index";
 import { styleBuilders } from "../templates/style";
 import typesBuilder from "../templates/types";
 import { Config, GenerateOptions } from "../types";
+import { getComponentNameFromPath } from "../utils";
 
 export const build = async (
   currentDir: string,
@@ -13,8 +14,8 @@ export const build = async (
   options: GenerateOptions
 ) => {
   const { componentsOutDir, programmingLang, stylingLang } = config;
-  const { type, name, propsList, isFaCC, isGeneric } = options;
-
+  const { type, name: _name, propsList, isFaCC, isGeneric } = options;
+  const name = getComponentNameFromPath(_name);
   const componentDir = path.join(currentDir, componentsOutDir, name);
 
   if (fs.existsSync(componentDir)) {
