@@ -3,15 +3,10 @@
   "version": "0.0.2",
   "description": "",
   "author": "dolanoadriano <adriantrabka98@gmail.com>",
-  "keywords": [
-    "react",
-    "components",
-    "cli",
-    "react-cli"
-  ],
+  "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dolanoadriano/techni-tools/tree/main/packages/react-cli"
+    "url": "https://github.com/dolanoadriano/techni-tools/tree/main/packages/inspector"
   },
   "homepage": "",
   "license": "ISC",
@@ -28,5 +23,6 @@
   },
   "devDependencies": {
     "@types/node": "^20.3.1"
-  }
+  },
+  "gitHead": "fecf22cccbe92f8e56bcf350e8f10db091fb5e29"
 }
