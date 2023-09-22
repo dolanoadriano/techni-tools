@@ -1,0 +1,33 @@
+{
+  "name": "@techni-tools/inspector",
+  "version": "0.0.1",
+  "description": "",
+  "author": "dolanoadriano <adriantrabka98@gmail.com>",
+  "keywords": [
+    "react",
+    "components",
+    "cli",
+    "react-cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dolanoadriano/techni-tools/tree/main/packages/react-cli"
+  },
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "prepublish": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.3.1"
+  },
+  "dependencies": {}
+}

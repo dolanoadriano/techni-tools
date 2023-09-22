@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "workspaces": [
-    "packages/react-cli"
+    "packages/react-cli",
+    "packages/inspector"
   ],
   "main": "index.js",
   "scripts": {
