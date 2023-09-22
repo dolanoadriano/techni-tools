@@ -1,6 +1,6 @@
 {
   "name": "@techni-tools/inspector",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "dolanoadriano <adriantrabka98@gmail.com>",
   "keywords": [
@@ -28,6 +28,5 @@
   },
   "devDependencies": {
     "@types/node": "^20.3.1"
-  },
-  "dependencies": {}
+  }
 }
