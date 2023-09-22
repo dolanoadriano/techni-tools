@@ -1,6 +1,6 @@
-export * from "./CSSInspector";
-export * from "./HTMLInspector";
-export * from "./JSInspector";
+export { default as CSSInspector } from "./CSSInspector";
+export { default as HTMLInspector } from "./HTMLInspector";
+export { default as JSInspector } from "./JSInspector";
 
 export const extractFontsFromGoogleFontsUrl = (
   url: string | undefined | null
