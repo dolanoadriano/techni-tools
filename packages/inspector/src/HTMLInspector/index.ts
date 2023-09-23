@@ -1,10 +1,12 @@
+import { DOMWindow } from "jsdom";
+
 import { StyleDeclarationSchema } from "../CSSInspector/types";
 import { kebabize } from "../utils";
 
 class HTMLInspector {
-  private readonly window: Window;
+  private readonly window: DOMWindow;
 
-  public constructor(window: Window) {
+  public constructor(window: DOMWindow) {
     this.window = window;
   }
 
