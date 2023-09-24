@@ -21,7 +21,7 @@ program
     await run([
       `--testPathPattern=${project}`,
       `-t=${test}`,
-      `--testPathIgnorePatterns=/node_modules\/(?!@techni-tools)(.*)`,
+      `--testPathIgnorePatterns=node_modules/(?!\@techni-tools/checker)`,
     ]);
   });
 
