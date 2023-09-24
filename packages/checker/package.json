@@ -1,0 +1,37 @@
+{
+  "name": "@techni-tools/checker",
+  "version": "0.0.1",
+  "author": "dolanoadriano <adriantrabka98@gmail.com>",
+  "keywords": [
+    "react",
+    "components",
+    "cli",
+    "react-cli"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dolanoadriano/techni-tools/tree/main/packages/checker"
+  },
+  "homepage": "",
+  "license": "ISC",
+  "main": "lib/src/index.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "build": "rm -rf lib && tsc",
+    "prepublish": "npm run build"
+  },
+  "bin": {
+    "techni-tools-checker": "./lib/src/bin/index.js"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
