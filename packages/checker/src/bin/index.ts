@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import { program } from "commander";
 import { Config } from "jest";
 import { run } from "jest-cli";
