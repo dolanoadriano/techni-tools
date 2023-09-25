@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 
 import { componentBuilders } from "../templates/component";
-import indexBuilder from "../templates/index";
+import indexBuilder from "../templates/index/index";
 import { styleBuilders } from "../templates/style";
 import typesBuilder from "../templates/types";
 import { Config, GenerateOptions } from "../types";
