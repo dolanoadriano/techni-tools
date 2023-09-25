@@ -4,13 +4,12 @@ import {
   setupHTMLTestContext,
 } from "@techni-tools/inspector";
 import { expect } from "chai";
-import { JSDOM } from "jsdom";
 import { before, describe } from "mocha";
 import path from "path";
 
 const exerciseNumber = 1;
 
-describe(`Exercise ${exerciseNumber}`, () => {
+describe(`[SI][S01][E03] Exercise 1`, () => {
   let ctx: HTMLTestContext;
 
   before(() => {

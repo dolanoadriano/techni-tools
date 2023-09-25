@@ -36,9 +36,9 @@ program
       "..",
       "tests",
       "websites",
-      `S01`,
-      `E01`,
-      `ex-1`,
+      subject,
+      episode,
+      exercise,
       "exercise.test.js"
     );
     mocha.addFile(file);
