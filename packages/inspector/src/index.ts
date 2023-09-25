@@ -1,4 +1,3 @@
-import cssom from "cssom";
 import fs from "fs";
 import { JSDOM } from "jsdom";
 import path from "path";
@@ -9,6 +8,14 @@ import HTMLInspector from "./HTMLInspector";
 export { default as CSSInspector } from "./CSSInspector";
 export { default as HTMLInspector } from "./HTMLInspector";
 export { default as JSInspector } from "./JSInspector";
+
+export type HTMLTestContext = {
+  htmlContent: string;
+  dom: JSDOM;
+  document: Document;
+  htmlInspector: HTMLInspector;
+  cssInspector: CSSInspector;
+};
 
 export const extractFontsFromGoogleFontsUrl = (
   url: string | undefined | null
@@ -23,11 +30,8 @@ export const extractFontsFromGoogleFontsUrl = (
   );
 };
 
-export const loadHTML = (paths: [...string[], `${string}.html`]) => {
-  const htmlContent = fs.readFileSync(
-    path.resolve(__dirname, ...paths),
-    "utf-8"
-  );
+export const setupHTMLTestContext = (paths: string[]): HTMLTestContext => {
+  const htmlContent = fs.readFileSync(path.resolve(...paths), "utf-8");
   const dom = new JSDOM(htmlContent);
   const document = dom.window.document;
   const htmlInspector = new HTMLInspector(dom.window);
