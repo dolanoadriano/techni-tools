@@ -41,8 +41,6 @@
     "chai": "^4.3.8",
     "commander": "^11.0.0",
     "fs": "^0.0.1-security",
-    "jest": "^29.7.0",
-    "jest-cli": "^29.7.0",
     "jsdom": "^22.1.0",
     "mocha": "^10.2.0",
     "path": "^0.12.7",
@@ -51,5 +49,5 @@
   "devDependencies": {
     "@techni-tools/checker": "^0.0.7"
   },
-  "gitHead": "98ded3ef84555f57e744bd608888308a3f315342"
+  "gitHead": "15b65f191a0777fbd88cf79b5fdeb87925101c14"
 }

@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 import { program } from "commander";
-import { Config } from "jest";
 import Mocha from "mocha";
 import path from "path";
 
