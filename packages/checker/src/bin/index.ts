@@ -36,6 +36,7 @@ program
       "..",
       "tests",
       subject,
+      season,
       episode,
       exercise,
       "exercise.test.js"
