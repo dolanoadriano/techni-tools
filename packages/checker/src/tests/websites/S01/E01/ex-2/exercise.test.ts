@@ -1,4 +1,8 @@
-import { CSSInspector, HTMLInspector, loadHTML } from "@techni-tools/inspector";
+import {
+  CSSInspector,
+  HTMLInspector,
+  setupHTMLTestContext,
+} from "@techni-tools/inspector";
 
 const exerciseNumber = 2;
 

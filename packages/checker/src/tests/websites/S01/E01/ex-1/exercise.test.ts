@@ -1,4 +1,8 @@
-import { HTMLTestContext, setupHTMLTestContext } from "@techni-tools/inspector";
+import {
+  HTMLTestContext,
+  extractFontsFromGoogleFontsUrl,
+  setupHTMLTestContext,
+} from "@techni-tools/inspector";
 import { expect } from "chai";
 import { JSDOM } from "jsdom";
 import { before, describe } from "mocha";
@@ -28,8 +32,8 @@ describe(`Exercise ${exerciseNumber}`, () => {
     const spanElement = ctx.document.querySelector("body > span");
     expect(h1Element).not.null;
     expect(spanElement).not.null;
-    expect(spanElement?.textContent?.trim()).not.be("");
-    expect(h1Element?.textContent?.trim()).not.be("");
+    expect(spanElement?.textContent?.trim()).not.to.equal("");
+    expect(h1Element?.textContent?.trim()).not.to.equal("");
   });
 
   it("should have a Google Font link in the <head>", () => {
@@ -44,17 +48,19 @@ describe(`Exercise ${exerciseNumber}`, () => {
     expect(styleElement).not.null;
   });
 
-  /*it("should have a CSS rule for the 'body' selector with a specified 'font-family' property", () => {
-    const bodyRule = findCssRuleBySelector("body");
-    const linkElement = document.querySelector(
+  it("should have a CSS rule for the 'body' selector with a specified 'font-family' property", () => {
+    const linkElement = ctx.document.querySelector(
       `head > link[href^="https://fonts.googleapis.com/css"]`
     );
     const href = linkElement?.getAttribute("href");
     const fonts = extractFontsFromGoogleFontsUrl(href);
-    expect(
-      fonts?.some((font) =>
-        bodyRule?.style.getPropertyValue("font-family").includes(font)
-      )
-    ).be.true;
-  });*/
+
+    const isFontImportedForBody =
+      fonts !== undefined &&
+      ctx.cssInspector.hasStyleDeclaration("body", {
+        fontFamily: (value) => fonts?.some((font) => value.includes(font)),
+      });
+
+    expect(isFontImportedForBody).to.equal(true);
+  });
 });
