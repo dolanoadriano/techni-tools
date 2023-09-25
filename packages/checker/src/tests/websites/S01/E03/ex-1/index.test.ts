@@ -7,8 +7,6 @@ import { expect } from "chai";
 import { before, describe } from "mocha";
 import path from "path";
 
-const exerciseNumber = 1;
-
 describe(`[SI][S01][E03] Exercise 1`, () => {
   let ctx: HTMLTestContext;
 

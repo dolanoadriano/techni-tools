@@ -39,7 +39,7 @@ program
       season,
       episode,
       exercise,
-      "exercise.test.js"
+      "index.test.js"
     );
     mocha.addFile(file);
 

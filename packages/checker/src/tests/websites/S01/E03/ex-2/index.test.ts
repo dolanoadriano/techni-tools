@@ -3,8 +3,6 @@ import { expect } from "chai";
 import { before, describe } from "mocha";
 import path from "path";
 
-const exerciseNumber = 2;
-
 describe(`[SI][S01][E03] Exercise 2`, () => {
   let ctx: HTMLTestContext;
 
@@ -47,7 +45,7 @@ describe(`[SI][S01][E03] Exercise 2`, () => {
   });
 
   it("should have a CSS rule for the 'p' selector with a line-height of 25px", () => {
-    const isValidDeclaration = ctx.cssInspector.hasStyleDeclaration("h1", {
+    const isValidDeclaration = ctx.cssInspector.hasStyleDeclaration("p", {
       lineHeight: "25px",
     });
 
