@@ -35,7 +35,6 @@ program
       __dirname,
       "..",
       "tests",
-      "websites",
       subject,
       episode,
       exercise,
