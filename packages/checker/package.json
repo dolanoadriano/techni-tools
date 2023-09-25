@@ -50,5 +50,6 @@
   },
   "devDependencies": {
     "@techni-tools/checker": "^0.0.7"
-  }
+  },
+  "gitHead": "98ded3ef84555f57e744bd608888308a3f315342"
 }
