@@ -30,8 +30,8 @@ export const extractFontsFromGoogleFontsUrl = (
   );
 };
 
-export const setupHTMLTestContext = (paths: string[]): HTMLTestContext => {
-  const htmlContent = fs.readFileSync(path.resolve(...paths), "utf-8");
+export const setupHTMLTestContext = (path: string): HTMLTestContext => {
+  const htmlContent = fs.readFileSync(path, "utf-8");
   const dom = new JSDOM(htmlContent);
   const document = dom.window.document;
   const htmlInspector = new HTMLInspector(dom.window);
