@@ -6,16 +6,27 @@ import path from "path";
 program.name("checker");
 
 program
-  .option("-p --project <id>")
+  .option("-sb --subject <id>")
+  .option("-se --season <id>")
+  .option("-ep --episode <id>")
+  .option("-ex --exercise <id>")
   .option("-t --test <id>")
   .action(async (options) => {
-    const { project, test } = options;
-    if (!project) {
-      console.error("-p undefined");
+    const { subject, season, episode, exercise, test } = options;
+    if (!subject) {
+      console.error("-sb undefined");
       process.exit(-1);
     }
-    if (!test) {
-      console.error("-t undefined");
+    if (!season) {
+      console.error("-se undefined");
+      process.exit(-1);
+    }
+    if (!episode) {
+      console.error("-ep undefined");
+      process.exit(-1);
+    }
+    if (!exercise) {
+      console.error("-ex undefined");
       process.exit(-1);
     }
 
@@ -25,10 +36,10 @@ program
       "..",
       "tests",
       "websites",
-      "S01",
-      "E01",
-      "ex-1",
-      "test.test.js"
+      `S01`,
+      `E01`,
+      `ex-1`,
+      "exercise.test.js"
     );
     mocha.addFile(file);
 
