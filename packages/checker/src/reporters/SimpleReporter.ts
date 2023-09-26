@@ -9,20 +9,22 @@ class SimpleReporter extends Base {
     let passes = 0;
     let failures = 0;
 
+    runner.on("suite", (suite) => {
+      console.log(`\n${suite.title}\n`);
+    });
+
     runner.on("pass", (test) => {
       passes++;
-      console.log(color("bright pass", `✓ ${test.fullTitle()}: passed`));
+      console.log(` ${color("bright pass", "✓")} ${test.title}`);
     });
 
     runner.on("fail", (test, err) => {
       failures++;
-      console.log(
-        color("fail", `✖ ${test.fullTitle()}: failed - ${err.message}`)
-      );
+      console.log(` ${color("fail", "✖")} ${test.title}`);
     });
 
     runner.on("end", () => {
-      console.log("Result");
+      console.log();
       console.log(color("green", `Passed: ${passes}`));
       console.log(color("fail", `Failed: ${failures}`));
     });
