@@ -30,7 +30,7 @@ program
       process.exit(-1);
     }
 
-    const mocha = new Mocha();
+    const mocha = new Mocha({ reporter: "min" });
     const file = path.join(
       __dirname,
       "..",
