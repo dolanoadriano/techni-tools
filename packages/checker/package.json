@@ -1,6 +1,6 @@
 {
   "name": "@techni-tools/checker",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "dolanoadriano <adriantrabka98@gmail.com>",
   "keywords": [
     "react",
@@ -33,7 +33,7 @@
     "techni-tools-checker": "lib/bin/index.js"
   },
   "dependencies": {
-    "@techni-tools/inspector": "^0.2.2",
+    "@techni-tools/inspector": "^0.2.3",
     "@types/assert": "^1.5.7",
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",
