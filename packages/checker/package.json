@@ -37,6 +37,7 @@
     "@types/assert": "^1.5.7",
     "@types/chai": "^4.3.6",
     "@types/mocha": "^10.0.1",
+    "@types/rewire": "^2.5.28",
     "assert": "^2.1.0",
     "chai": "^4.3.8",
     "commander": "^11.0.0",
@@ -44,6 +45,7 @@
     "jsdom": "^22.1.0",
     "mocha": "^10.2.0",
     "path": "^0.12.7",
+    "rewire": "^7.0.0",
     "ts-node": "^10.9.1",
     "zod": "^3.22.2"
   },
