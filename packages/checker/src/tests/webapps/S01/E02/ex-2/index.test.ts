@@ -51,6 +51,11 @@ describe(`[PAI][S01][E03] Exercise 2`, () => {
     expect(utilsContent).to.match(reduceRegex);
   });
 
+  it("should have a index.js file", () => {
+    const filePath = path.join(projectPath, "index.js");
+    expect(fs.existsSync(filePath)).to.be.true;
+  });
+
   it("should have a named export 'countAvg' in utils.js", () => {
     const utilsContent = fs.readFileSync(
       path.join(projectPath, "utils.js"),
