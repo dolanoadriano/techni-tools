@@ -3,27 +3,46 @@ import { program } from "commander";
 import fs from "fs";
 import Mocha from "mocha";
 import path from "path";
+import { z } from "zod";
 
 import SimpleReporter from "../reporters/SimpleReporter";
 
 program.name("checker");
 
-export type Options = {
-  subject?: string;
-  season?: string;
-  episode?: string;
-  exercise?: string;
-  test?: string;
-};
+export const OptionsSchema = z.object({
+  subject: z.string().regex(/^[a-zA-Z0-9-]+$/),
+  season: z.string().regex(/^S[0-9]{2}$/),
+  episode: z.string().regex(/^E[0-9]{2}$/),
+  exercise: z.string().regex(/^ex-\d+$/),
+  test: z.string().optional(),
+});
 
-const getConfigOptions = () => {};
+export type Options = z.infer<typeof OptionsSchema>;
 
-const getConfig = () => {};
-
-const x = (commandOptions: Options) => {
+const getOptionsFromConfig = (): Partial<Options> => {
   const configPath = path.join(process.cwd(), "techniskills.json");
   const configRawFile = fs.readFileSync(configPath, "utf-8");
   const configOptions = JSON.parse(configRawFile) ?? {};
+  return configOptions;
+};
+
+const getOptions = (commandOptions: Partial<Options>): Options => {
+  try {
+    const configOptions = getOptionsFromConfig();
+    const _options = {
+      subject: commandOptions.subject ?? configOptions.subject,
+      season: commandOptions.season ?? configOptions.season,
+      episode: commandOptions.episode ?? configOptions.episode,
+      exercise: commandOptions.exercise ?? configOptions.exercise,
+      test: commandOptions.test,
+    };
+
+    const options = OptionsSchema.parse(_options);
+    return options;
+  } catch (error) {
+    console.log("Missing arguments.");
+    process.exit(1);
+  }
 };
 
 program
@@ -32,24 +51,8 @@ program
   .option("-ep --episode <id>")
   .option("-ex --exercise <id>")
   .option("-t --test <id>")
-  .action(async (options) => {
-    const { subject, season, episode, exercise, test } = options;
-    if (!subject) {
-      console.error("-sb undefined");
-      process.exit(-1);
-    }
-    if (!season) {
-      console.error("-se undefined");
-      process.exit(-1);
-    }
-    if (!episode) {
-      console.error("-ep undefined");
-      process.exit(-1);
-    }
-    if (!exercise) {
-      console.error("-ex undefined");
-      process.exit(-1);
-    }
+  .action(async (commandOptions) => {
+    const { subject, season, episode, exercise } = getOptions(commandOptions);
 
     const mocha = new Mocha({ reporter: SimpleReporter });
     const file = path.join(

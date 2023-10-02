@@ -10,7 +10,7 @@ class SimpleReporter extends Base {
     let failures = 0;
 
     runner.on("suite", (suite) => {
-      console.log(`\n${suite.title}\n`);
+      console.log(`${suite.title}`);
     });
 
     runner.on("pass", (test) => {
