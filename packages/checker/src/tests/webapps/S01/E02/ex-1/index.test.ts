@@ -1,4 +1,3 @@
-import { HTMLTestContext, setupHTMLTestContext } from "@techni-tools/inspector";
 import { expect } from "chai";
 import fs from "fs";
 import { before, describe } from "mocha";
