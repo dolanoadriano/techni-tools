@@ -27,7 +27,8 @@
   "scripts": {
     "build": "rm -rf lib && tsc",
     "prepublish": "npm run build",
-    "test": "mocha ./**/*.test.js"
+    "test": "mocha ./**/*.test.js",
+    "debug": "NODE_ENV=development ts-node ./src/bin/index.ts"
   },
   "bin": {
     "techni-tools-checker": "lib/bin/index.js"
@@ -39,6 +40,7 @@
     "@types/mocha": "^10.0.1",
     "@types/rewire": "^2.5.28",
     "assert": "^2.1.0",
+    "babel-plugin-rewire": "^1.2.0",
     "chai": "^4.3.8",
     "commander": "^11.0.0",
     "fs": "^0.0.1-security",

@@ -19,25 +19,31 @@ export const OptionsSchema = z.object({
 
 export type Options = z.infer<typeof OptionsSchema>;
 
-const getOptionsFromConfig = (): Partial<Options> => {
-  const configPath = path.join(process.cwd(), "techniskills.json");
-  const configRawFile = fs.readFileSync(configPath, "utf-8");
-  const configOptions = JSON.parse(configRawFile) ?? {};
-  return configOptions;
+const getOptionsFromConfig = (): Partial<Options> | undefined => {
+  try {
+    const configPath = path.join(process.cwd(), "techniskills.json");
+    const configRawFile = fs.readFileSync(configPath, "utf-8");
+    const configOptions = JSON.parse(configRawFile) ?? {};
+    return configOptions;
+  } catch (error) {
+    return undefined;
+  }
 };
 
 const getOptions = (commandOptions: Partial<Options>): Options => {
   try {
     const configOptions = getOptionsFromConfig();
+
     const _options = {
-      subject: commandOptions.subject ?? configOptions.subject,
-      season: commandOptions.season ?? configOptions.season,
-      episode: commandOptions.episode ?? configOptions.episode,
-      exercise: commandOptions.exercise ?? configOptions.exercise,
+      subject: commandOptions.subject ?? configOptions?.subject,
+      season: commandOptions.season ?? configOptions?.season,
+      episode: commandOptions.episode ?? configOptions?.episode,
+      exercise: commandOptions.exercise ?? configOptions?.exercise,
       test: commandOptions.test,
     };
 
     const options = OptionsSchema.parse(_options);
+
     return options;
   } catch (error) {
     console.log("Missing arguments.");
@@ -54,7 +60,10 @@ program
   .action(async (commandOptions) => {
     const { subject, season, episode, exercise } = getOptions(commandOptions);
 
-    const mocha = new Mocha({ reporter: SimpleReporter });
+    const mocha = new Mocha({
+      reporter:
+        process.env.NODE_ENV === "development" ? undefined : SimpleReporter,
+    });
     const file = path.join(
       __dirname,
       "..",
@@ -63,7 +72,7 @@ program
       season,
       episode,
       exercise,
-      "index.test.js"
+      process.env.NODE_ENV === "development" ? "index.test.ts" : "index.test.js"
     );
     mocha.addFile(file);
 

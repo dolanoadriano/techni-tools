@@ -20,6 +20,7 @@ class SimpleReporter extends Base {
 
     runner.on("fail", (test, err) => {
       failures++;
+      process.env.NODE_ENV === "development" ? console.log(err, "\n") : null;
       console.log(` ${color("fail", "✖")} ${test.title}`);
     });
 
