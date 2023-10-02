@@ -39,11 +39,19 @@ describe(`[PAI][S01][E02] Exercise 1`, () => {
     expect(fs.existsSync(indexPath)).to.be.true;
   });
 
-  it("should import 'cowsay' and use .say() method in index.js", () => {
+  it("should import 'cowsay' in index.js", () => {
     const indexPath = path.join(projectRoot, "index.js");
     const indexContent = fs.readFileSync(indexPath, "utf-8");
 
-    expect(indexContent).to.include("import cowsay from 'cowsay'");
-    expect(indexContent).to.match(/cowsay\.say\(\{ text: .+\}\)/);
+    const cowsayImportRegex = /import\s+cowsay\s+from\s+['"]cowsay['"]/;
+    expect(indexContent).to.match(cowsayImportRegex);
+  });
+
+  it("should use .say() method from 'cowsay' in index.js", () => {
+    const indexPath = path.join(projectRoot, "index.js");
+    const indexContent = fs.readFileSync(indexPath, "utf-8");
+
+    const cowsayMethodRegex = /cowsay\.say\(\{[^}]+\}\)/;
+    expect(indexContent).to.match(cowsayMethodRegex);
   });
 });
