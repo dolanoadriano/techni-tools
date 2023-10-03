@@ -49,6 +49,7 @@
     "path": "^0.12.7",
     "rewire": "^7.0.0",
     "ts-node": "^10.9.1",
+    "uuid": "^9.0.1",
     "zod": "^3.22.2"
   },
   "devDependencies": {

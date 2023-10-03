@@ -2,6 +2,7 @@ import { expect } from "chai";
 import fs from "fs";
 import { describe } from "mocha";
 import path from "path";
+import rewire from "rewire";
 
 import { getProjectPath } from "../../../../../utils";
 
@@ -18,7 +19,7 @@ const projectPath = getProjectPath();
         Wynik zapisz do stałej "avg" i wyświetl wartość za pomocą console.log.
 
 */
-describe(`[PAI][S01][E03] Exercise 2`, () => {
+describe(`[PAI][S01][E02] Exercise 2`, () => {
   it("should have a utils.js file", () => {
     const filePath = path.join(projectPath, "utils.js");
     expect(fs.existsSync(filePath)).to.be.true;
@@ -51,6 +52,18 @@ describe(`[PAI][S01][E03] Exercise 2`, () => {
     expect(utilsContent).to.match(reduceRegex);
   });
 
+  it("should 'countAvg([1, 2, 3])' return 2", () => {
+    const tempFilePath = path.join(__dirname, "tempUtils.js");
+    fs.copyFileSync(path.join(projectPath, "utils.js"), tempFilePath);
+    const utilsRewired = rewire(tempFilePath);
+    const countAvg = utilsRewired.__get__("countAvg");
+
+    const result = countAvg([1, 2, 3]);
+    expect(result).to.equal(2);
+
+    fs.unlinkSync(tempFilePath);
+  });
+
   it("should have a index.js file", () => {
     const filePath = path.join(projectPath, "index.js");
     expect(fs.existsSync(filePath)).to.be.true;
@@ -61,8 +74,17 @@ describe(`[PAI][S01][E03] Exercise 2`, () => {
       path.join(projectPath, "utils.js"),
       "utf-8"
     );
-    const exportRegex = /export\s+function\s+countAvg\(/;
-    expect(utilsContent).to.match(exportRegex);
+
+    const functionDeclarationRegex = /export\s+function\s+countAvg\(/;
+    const functionExpressionRegex = /const\s+countAvg\s*=\s*function\(/;
+    const arrowFunctionRegex = /const\s+countAvg\s*=\s*\([^)]*\)\s*=>/;
+
+    const hasFunctionDeclaration = functionDeclarationRegex.test(utilsContent);
+    const hasFunctionExpression = functionExpressionRegex.test(utilsContent);
+    const hasArrowFunction = arrowFunctionRegex.test(utilsContent);
+
+    expect(hasFunctionDeclaration || hasFunctionExpression || hasArrowFunction)
+      .to.be.true;
   });
 
   it("should import 'countAvg' function in index.js", () => {
@@ -93,7 +115,7 @@ describe(`[PAI][S01][E03] Exercise 2`, () => {
     expect(indexContent).to.match(assignRegex);
   });
 
-  it("should log the 'avg' variable to the console in index.js", async () => {
+  it("should log the 'avg' variable to the console in index.js", () => {
     const indexContent = fs.readFileSync(
       path.join(projectPath, "index.js"),
       "utf-8"
