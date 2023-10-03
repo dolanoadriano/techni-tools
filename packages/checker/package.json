@@ -28,7 +28,7 @@
     "build": "rm -rf lib && tsc",
     "prepublish": "npm run build",
     "test": "mocha ./**/*.test.js",
-    "debug": "ts-node ./src/bin/index.ts"
+    "check": "NODE_ENV=development ts-node ./src/bin/index.ts"
   },
   "bin": {
     "techni-tools-checker": "lib/bin/index.js"
@@ -58,5 +58,6 @@
   "bugs": {
     "url": "https://github.com/dolanoadriano/techni-tools/issues"
   },
-  "description": ""
+  "description": "",
+  "gitHead": "22d8ec67a8e9730ed0d5aaf8f8b7ad23133a2033"
 }

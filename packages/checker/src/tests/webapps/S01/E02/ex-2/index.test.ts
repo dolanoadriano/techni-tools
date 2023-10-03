@@ -53,8 +53,14 @@ describe(`[PAI][S01][E02] Exercise 2`, () => {
   });
 
   it("should 'countAvg([1, 2, 3])' return 2", () => {
+    const originalFilePath = path.join(projectPath, "utils.js");
     const tempFilePath = path.join(__dirname, "tempUtils.js");
-    fs.copyFileSync(path.join(projectPath, "utils.js"), tempFilePath);
+
+    let fileContent = fs.readFileSync(originalFilePath, "utf-8");
+    fileContent = fileContent.replace(/export\s+/g, "");
+
+    fs.writeFileSync(tempFilePath, fileContent);
+
     const utilsRewired = rewire(tempFilePath);
     const countAvg = utilsRewired.__get__("countAvg");
 

@@ -65,10 +65,7 @@ program
       getOptions(commandOptions);
 
     const mocha = new Mocha({
-      reporter:
-        process.env.NODE_ENV === "development" || debug
-          ? undefined
-          : SimpleReporter,
+      reporter: debug ? undefined : SimpleReporter,
     });
     const file = path.join(
       __dirname,
