@@ -28,7 +28,7 @@
     "build": "rm -rf lib && tsc",
     "prepublish": "npm run build",
     "test": "mocha ./**/*.test.js",
-    "debug": "NODE_ENV=development ts-node ./src/bin/index.ts"
+    "debug": "ts-node ./src/bin/index.ts"
   },
   "bin": {
     "techni-tools-checker": "lib/bin/index.js"

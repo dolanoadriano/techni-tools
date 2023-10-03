@@ -14,6 +14,7 @@ export const OptionsSchema = z.object({
   season: z.string().regex(/^S[0-9]{2}$/),
   episode: z.string().regex(/^E[0-9]{2}$/),
   exercise: z.string().regex(/^ex-\d+$/),
+  debug: z.any().optional(),
   test: z.string().optional(),
 });
 
@@ -40,6 +41,7 @@ const getOptions = (commandOptions: Partial<Options>): Options => {
       episode: commandOptions.episode ?? configOptions?.episode,
       exercise: commandOptions.exercise ?? configOptions?.exercise,
       test: commandOptions.test,
+      debug: commandOptions.debug,
     };
 
     const options = OptionsSchema.parse(_options);
@@ -57,9 +59,14 @@ program
   .option("-ep --episode <id>")
   .option("-ex --exercise <id>")
   .option("-t --test <id>")
+  .option("-d --debug")
   .action(async (commandOptions) => {
-    const { subject, season, episode, exercise } = getOptions(commandOptions);
+    const { subject, season, episode, exercise, debug } =
+      getOptions(commandOptions);
 
+    if (debug) {
+      process.env.NODE_ENV = "development";
+    }
     const mocha = new Mocha({
       reporter:
         process.env.NODE_ENV === "development" ? undefined : SimpleReporter,
