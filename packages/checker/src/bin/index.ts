@@ -64,12 +64,11 @@ program
     const { subject, season, episode, exercise, debug } =
       getOptions(commandOptions);
 
-    if (debug) {
-      process.env.NODE_ENV = "development";
-    }
     const mocha = new Mocha({
       reporter:
-        process.env.NODE_ENV === "development" ? undefined : SimpleReporter,
+        process.env.NODE_ENV === "development" || debug
+          ? undefined
+          : SimpleReporter,
     });
     const file = path.join(
       __dirname,
