@@ -1,0 +1,42 @@
+:root {
+  --content-color-info: #74aef6;
+  --content-color-error: #f79a8e;
+  --content-color-warning: #ffe47e;
+  --content-color-success: #6bdd9a;
+}
+
+.success {
+  color: var(--content-color-success);
+}
+
+body {
+  background: #212121;
+  color: #a6a6a6;
+  display: flex;
+  padding: 1rem;
+  font-family: "Inter", sans-serif;
+}
+
+#root {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+
+  &.fill {
+    background: rgb(9, 123, 237);
+    color: white;
+    border-radius: 0.25rem;
+    padding-inline: 0.625rem;
+    padding-block: 0.5rem;
+    border: none;
+    font-weight: 600;
+
+    &:hover {
+      background: #0265d2;
+    }
+  }
+}

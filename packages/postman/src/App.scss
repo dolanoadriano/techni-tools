@@ -1,0 +1,72 @@
+.request,
+.response {
+  flex: 1;
+}
+
+.request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  header {
+    display: flex;
+    gap: 0.5rem;
+
+    .endpoint {
+      background: #212121;
+      display: flex;
+      flex: 1;
+      outline: 1px solid #6b6b6b;
+      border-radius: 0.25rem;
+      height: 40px;
+
+      input,
+      select {
+        color: rgb(255, 255, 255);
+        background: none;
+        border: none;
+        font-size: 12px;
+        padding-inline: 0.5rem;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      input {
+        flex: 1;
+      }
+    }
+  }
+}
+
+ul.tabs {
+  display: flex;
+
+  button {
+    background: transparent;
+    border: none;
+  }
+}
+
+.response {
+  border-top: 1px solid #2b2b2b;
+  padding-block: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  header {
+    display: flex;
+    justify-content: space-between;
+
+    .meta {
+      display: flex;
+      gap: 0.5rem;
+    }
+  }
+
+  .tab-pane {
+    flex: 1;
+  }
+}
