@@ -1,18 +1,24 @@
 #!/usr/bin/env node
-import { exec } from "child_process";
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
 
-console.log("Techni Postman");
-const server = exec("npm run preview", (error, stdout, stderr) => {
-  if (error) {
-    console.error(`exec error: ${error}`);
-    return;
-  }
-  console.log(`stdout: ${stdout}`);
-  console.error(`stderr: ${stderr}`);
+const app = express();
+
+// Konwersja import.meta.url do ścieżki pliku
+const __filename = fileURLToPath(import.meta.url);
+// Użycie path.dirname do uzyskania ścieżki do katalogu bieżącego pliku
+const __dirname = path.dirname(__filename);
+
+// Serwowanie statycznych plików zbudowanej aplikacji React
+app.use(express.static(path.join(__dirname, "lib")));
+
+// Obsługa każdego innego requestu przez index.html
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "lib", "index.html"));
 });
 
-console.log("Open postman: http://localhost:4173");
-
-server.on("exit", (code) => {
-  console.log(`Child exited with code ${code}`);
+const port = process.env.PORT || 9999;
+app.listen(port, () => {
+  console.log(`Otwórz postman: http://localhost:${port}`);
 });
