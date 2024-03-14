@@ -1,0 +1,14 @@
+{
+  "description": "",
+  "scripts": {
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/react": "^18.2.24",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "vitest": "^0.34.6"
+  }
+}
