@@ -8,13 +8,14 @@
   flex-direction: column;
   gap: 0.5rem;
 
-  header {
+  & > header {
     display: flex;
     gap: 0.5rem;
 
     .endpoint {
       background: #212121;
       display: flex;
+      align-items: center;
       flex: 1;
       outline: 1px solid #6b6b6b;
       border-radius: 0.25rem;
@@ -22,11 +23,12 @@
 
       input,
       select {
+        height: 100%;
         color: rgb(255, 255, 255);
         background: none;
         border: none;
         font-size: 12px;
-        padding-inline: 0.5rem;
+        padding-inline: 0.75rem;
 
         &:focus {
           outline: none;
@@ -35,6 +37,50 @@
 
       input {
         flex: 1;
+      }
+
+      select {
+        margin-right: 0.75rem;
+        padding-right: 0;
+      }
+
+      .divider {
+        width: 1px;
+        height: 60%;
+        background: #303030;
+      }
+
+      select.method {
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &[data-method="get"] {
+          color: var(--content-color-success);
+        }
+
+        &[data-method="post"] {
+          color: var(--content-color-warning);
+        }
+
+        &[data-method="put"] {
+          color: var(--content-color-info);
+        }
+
+        &[data-method="patch"] {
+          color: var(--content-color-patch-method);
+        }
+
+        &[data-method="delete"] {
+          color: var(--content-color-error);
+        }
+
+        &[data-method="head"] {
+          color: var(--content-color-success);
+        }
+
+        &[data-method="options"] {
+          color: var(--content-color-options-method);
+        }
       }
     }
   }
@@ -63,10 +109,25 @@ ul.tabs {
     .meta {
       display: flex;
       gap: 0.5rem;
+
+      .field {
+        font-size: 0.6875rem;
+        display: flex;
+        gap: 0.25rem;
+        color: #f0f8ff;
+      }
     }
   }
 
   .tab-pane {
     flex: 1;
   }
+}
+
+.editor-wrapper {
+  flex: 1;
+  display: flex;
+  max-width: calc(100vw - 2rem);
+  height: 100%;
+  overflow: hidden;
 }
