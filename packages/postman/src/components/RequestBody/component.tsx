@@ -21,7 +21,7 @@ const contentTypeMap = {
 const RequestBody: React.FC<Props> = (props) => {
   const {} = props;
 
-  const { register, watch, setValue } = useFormContext();
+  const { register, setValue } = useFormContext();
   const [selectedBodyType, setSelectedBodyType] =
     useState<keyof typeof contentTypeMap>("none");
   const [selectedLanguage, setSelectedLanguage] =
@@ -61,13 +61,11 @@ const RequestBody: React.FC<Props> = (props) => {
               setSelectedLanguage(value as any)
             }
           >
-            {Object.entries(contentTypeMap["raw"]).map(
-              ([language, contentType]) => (
-                <option key={language} value={language}>
-                  {language}
-                </option>
-              )
-            )}
+            {Object.entries(contentTypeMap["raw"]).map(([language]) => (
+              <option key={language} value={language}>
+                {language}
+              </option>
+            ))}
           </select>
         )}
       </header>

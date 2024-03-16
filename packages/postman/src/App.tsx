@@ -14,7 +14,7 @@ import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import prettyBytes from "pretty-bytes";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import "./App.scss";
