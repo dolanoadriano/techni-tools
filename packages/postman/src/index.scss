@@ -142,7 +142,7 @@ input[type="checkbox"] {
   &:checked {
     &::before {
       background: white;
-      background-image: url("./check-gray.svg");
+      background-image: url("/check-gray.svg");
       background-repeat: no-repeat;
       background-position: center;
       background-size: contain;
@@ -152,7 +152,7 @@ input[type="checkbox"] {
   &:not(:checked) {
     &:hover {
       &::before {
-        background-image: url("./check-gray.svg");
+        background-image: url("/check-gray.svg");
         background-repeat: no-repeat;
         background-position: center;
         background-size: contain;
