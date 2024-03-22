@@ -1,96 +1,165 @@
-import Editor from "@monaco-editor/react";
-import React, { useEffect, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import React from "react";
+import { useFormContext } from "react-hook-form";
+import { v4 as uuidv4 } from "uuid";
 
+import { Entry } from "../KeyValuePairs/types";
+import { RequestData } from "../Request/types";
+import RequestBodyFormData from "../RequestBodyFormData";
+import RequestBodyFormUrlencoded from "../RequestBodyFormUrlencoded";
+import RequestBodyRaw from "../RequestBodyRaw";
 import "./style.scss";
 import { Props } from "./types";
 
-const contentTypeMap = {
-  none: undefined,
-  "form-data": "multipart/form-data",
-  "x-www-form-urlencoded": "application/x-www-form-urlencoded",
-  raw: {
-    text: "text/plain",
-    javascript: "application/javascript",
-    json: "application/json",
-    html: "application/html",
-    xml: "application/xml",
+const uniqueBy =
+  <TData extends object>(key: keyof TData) =>
+  (value: TData, index: number, array: TData[]) =>
+    index === array.findIndex((t) => t[key] === value[key]);
+
+const z = [
+  {
+    contentType: null,
+    bodyType: "none",
   },
-};
+  {
+    contentType: "multipart/form-data",
+    bodyType: "form-data",
+  },
+  {
+    contentType: "application/x-www-form-urlencoded",
+    bodyType: "x-www-form-urlencoded",
+  },
+  {
+    contentType: "text/plain",
+    bodyType: "raw",
+    language: "plain",
+    languageLabel: "Text",
+  },
+  {
+    contentType: "application/javascript",
+    bodyType: "raw",
+    language: "javascript",
+    languageLabel: "JavaScript",
+  },
+  {
+    contentType: "application/json",
+    bodyType: "raw",
+    language: "json",
+    languageLabel: "JSON",
+  },
+  {
+    contentType: "application/xml",
+    bodyType: "raw",
+    language: "xml",
+    languageLabel: "XML",
+  },
+  {
+    contentType: "text/html",
+    bodyType: "raw",
+    language: "html",
+    languageLabel: "HTML",
+  },
+];
 
 const RequestBody: React.FC<Props> = (props) => {
   const {} = props;
 
-  const { register, setValue } = useFormContext();
-  const [selectedBodyType, setSelectedBodyType] =
-    useState<keyof typeof contentTypeMap>("none");
-  const [selectedLanguage, setSelectedLanguage] =
-    useState<keyof (typeof contentTypeMap)["raw"]>("json");
+  const { setValue, watch } = useFormContext<RequestData>();
 
-  useEffect(() => {
-    const contentType =
-      selectedBodyType === "raw"
-        ? contentTypeMap[selectedBodyType][selectedLanguage]
-        : contentTypeMap[selectedBodyType];
+  const headerEntries = watch("headerEntries");
+  const rawBodyLanguage = watch("rawBodyLanguage");
 
-    setValue("headers.Content-Type", contentType);
-  }, [selectedBodyType, selectedLanguage]);
+  const contentType = headerEntries.find(
+    ({ key }) => key === "Content-Type"
+  )?.value;
+
+  const { bodyType: selectedBodyType } = z.find(
+    (zz) => zz.contentType === contentType
+  ) || { bodyType: "none" };
+
+  const setHeader = (key: string, value: string | null) => {
+    const idx = headerEntries.findIndex((entry) => entry.key === key);
+    const nextEntry: Entry = {
+      id: uuidv4(),
+      key,
+      value: value ?? "",
+      type: "text",
+      checked: true,
+      readonly: true,
+    };
+    const newEntries =
+      value === null
+        ? headerEntries.filter((entry) => entry.key !== key)
+        : idx === -1
+        ? [...headerEntries, { ...nextEntry }]
+        : (headerEntries as any).with(idx, nextEntry);
+
+    setValue("headerEntries", newEntries);
+  };
 
   return (
     <div className={`RequestBody`}>
       <header>
-        <fieldset>
-          {Object.entries(contentTypeMap).map(([bodyType]) => (
-            <label key={bodyType}>
-              <input
-                type={"radio"}
-                name={"body-type"}
-                value={bodyType}
-                checked={selectedBodyType === bodyType}
-                onChange={() => setSelectedBodyType(bodyType as any)}
-              />
-              <span>{bodyType}</span>
-            </label>
-          ))}
-        </fieldset>
+        <div className="radio-tabs">
+          <select
+            value={selectedBodyType}
+            onChange={(event) => {
+              setHeader(
+                "Content-Type",
+                z.find((x) => x.bodyType === event.target.value)!.contentType
+              );
+            }}
+          >
+            {z.filter(uniqueBy("bodyType")).map(({ bodyType }) => (
+              <option value={bodyType}>{bodyType}</option>
+            ))}
+          </select>
+          <fieldset>
+            {z.filter(uniqueBy("bodyType")).map(({ bodyType, contentType }) => (
+              <label key={contentType}>
+                <input
+                  type={"radio"}
+                  name={"body-type"}
+                  value={bodyType}
+                  checked={selectedBodyType === bodyType}
+                  onChange={() => {
+                    setHeader("Content-Type", contentType);
+                  }}
+                />
+                <span>{bodyType}</span>
+              </label>
+            ))}
+          </fieldset>
+        </div>
         {selectedBodyType === "raw" && (
           <select
             className="language"
-            value={selectedLanguage}
-            onChange={({ target: { value } }) =>
-              setSelectedLanguage(value as any)
-            }
+            value={rawBodyLanguage}
+            onChange={({ target: { value: language } }) => {
+              const newContentType =
+                z.find((zz) => zz.language === language)?.contentType ?? null;
+              setHeader("Content-Type", newContentType);
+              setValue("rawBodyLanguage", language);
+            }}
           >
-            {Object.entries(contentTypeMap["raw"]).map(([language]) => (
-              <option key={language} value={language}>
-                {language}
-              </option>
-            ))}
+            {z
+              .filter(({ language }) => language)
+              .map(({ language, languageLabel }) => (
+                <option key={language} value={language}>
+                  {languageLabel}
+                </option>
+              ))}
           </select>
         )}
       </header>
-      {selectedBodyType === "raw" && (
-        <div className="editor-wrapper">
-          <Controller
-            {...register("body")}
-            render={({ field }) => (
-              <Editor
-                width="100%"
-                height="100%"
-                theme="vs-dark"
-                language={selectedLanguage}
-                options={{
-                  readOnly: field.disabled,
-                  minimap: { enabled: false },
-                  scrollBeyondLastLine: false,
-                }}
-                value={field.value}
-                onChange={(value) => field.onChange(value)}
-              />
-            )}
-          ></Controller>
-        </div>
-      )}
+      <div>
+        {selectedBodyType === "form-data" && <RequestBodyFormData />}
+        {selectedBodyType === "x-www-form-urlencoded" && (
+          <RequestBodyFormUrlencoded />
+        )}
+        {selectedBodyType === "raw" && (
+          <RequestBodyRaw selectedLanguage={rawBodyLanguage} />
+        )}
+      </div>
     </div>
   );
 };

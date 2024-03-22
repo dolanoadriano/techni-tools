@@ -1,0 +1,111 @@
+.Request {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  & > header {
+    display: flex;
+    gap: 0.5rem;
+
+    button {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        display: none;
+      }
+
+      @media (max-width: 400px) {
+        .icon {
+          display: initial;
+        }
+
+        span {
+          display: none;
+        }
+      }
+    }
+
+    .endpoint {
+      background: #212121;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      outline: 1px solid #6b6b6b;
+      border-radius: 0.25rem;
+      height: 40px;
+      color-scheme: dark;
+
+      input {
+        width: 0;
+      }
+
+      input,
+      select {
+        height: 100%;
+        color: rgb(255, 255, 255);
+        background: none;
+        border: none;
+        font-size: 12px;
+        padding-inline: 0.75rem;
+
+        &:-webkit-autofill,
+        &:-webkit-autofill:focus {
+          background: none;
+        }
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      input {
+        flex: 1;
+      }
+
+      select {
+        margin-right: 0.75rem;
+        padding-right: 0;
+      }
+
+      .divider {
+        width: 1px;
+        height: 60%;
+        background: #303030;
+      }
+
+      select.method {
+        font-weight: 600;
+        text-transform: uppercase;
+
+        &[data-method="get"] {
+          color: var(--content-color-success);
+        }
+
+        &[data-method="post"] {
+          color: var(--content-color-warning);
+        }
+
+        &[data-method="put"] {
+          color: var(--content-color-info);
+        }
+
+        &[data-method="patch"] {
+          color: var(--content-color-patch-method);
+        }
+
+        &[data-method="delete"] {
+          color: var(--content-color-error);
+        }
+
+        &[data-method="head"] {
+          color: var(--content-color-success);
+        }
+
+        &[data-method="options"] {
+          color: var(--content-color-options-method);
+        }
+      }
+    }
+  }
+}

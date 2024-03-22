@@ -1,11 +1,10 @@
-import Editor from "@monaco-editor/react";
 import { loader } from "@monaco-editor/react";
-import { useMutation } from "@tanstack/react-query";
 import axios, {
   AxiosError,
   AxiosRequestConfig,
   AxiosResponse,
   CancelTokenSource,
+  isAxiosError,
 } from "axios";
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
@@ -13,13 +12,19 @@ import cssWorker from "monaco-editor/esm/vs/language/css/css.worker?worker";
 import htmlWorker from "monaco-editor/esm/vs/language/html/html.worker?worker";
 import jsonWorker from "monaco-editor/esm/vs/language/json/json.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
-import prettyBytes from "pretty-bytes";
+import qs from "qs";
 import { useRef } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import Split from "react-split";
 
 import "./App.scss";
-import RequestBody from "./components/RequestBody";
-import statuses from "./resources/statuses.json";
+import HitSend from "./assets/illustration-hit-send.svg";
+import { Entry } from "./components/KeyValuePairs/types";
+import Request from "./components/Request";
+import { RequestData } from "./components/Request/types";
+import Response from "./components/Response";
+import { PostmanResponse } from "./components/Response/types";
+import WithProgressBar from "./components/WithProgressBar";
+import useOptimisticMutation from "./hooks/useOptimisticMutation";
 
 // Rozszerz typy Axios
 interface CustomAxiosRequestConfig extends AxiosRequestConfig {
@@ -56,6 +61,45 @@ axios.interceptors.response.use(
   }
 );
 
+function blobToBase64(blob: Blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+const decodeResBody = async (response: AxiosResponse) => {
+  const contentType = response.headers["content-type"];
+  const mimeType = contentType.split(";")[0];
+
+  if (mimeType.includes("application/json")) {
+    return JSON.parse(new TextDecoder().decode(response.data));
+  } else if (["image/", "video/", "audio/"].some((x) => mimeType.includes(x))) {
+    const blob = new Blob([response.data], { type: contentType });
+    return await blobToBase64(blob);
+  } else if (mimeType.includes("text/")) {
+    return new TextDecoder().decode(response.data);
+  } else {
+    return response.data;
+  }
+};
+
+axios.interceptors.response.use(
+  async (response) => {
+    response.data = await decodeResBody(response);
+
+    return response;
+  },
+  async (error) => {
+    if (isAxiosError(error) && error.response) {
+      error.response.data = await decodeResBody(error.response);
+    }
+    return Promise.reject(error);
+  }
+);
+
 self.MonacoEnvironment = {
   getWorker(_, label) {
     if (label === "json") return new jsonWorker();
@@ -69,45 +113,76 @@ self.MonacoEnvironment = {
 loader.config({ monaco });
 loader.init().then(/* ... */);
 
+const createFormData = (entries: Entry<string | File>[]) => {
+  const formData = new FormData();
+  entries.forEach(({ key, value }) => formData.append(key, value));
+  return formData;
+};
+
 function App() {
   const cancelRequestRef = useRef<CancelTokenSource | null>(null);
-
-  const form = useForm({
-    defaultValues: {
-      method: "get",
-      url: "",
-      body: undefined,
-      params: {},
-      headers: {},
-    },
-  });
-  const { register, handleSubmit, watch } = form;
 
   const {
     mutate: sendRequest,
     isPending,
     data: response,
-  } = useMutation<
-    { status: string | number; duration?: number; data: any },
-    any,
-    { url: string; method: string; body?: string; headers: {} }
-  >({
+  } = useOptimisticMutation<PostmanResponse, any, RequestData>({
+    mutationKey: [],
     mutationFn: async (variables) => {
+      const {
+        url,
+        method,
+        headerEntries,
+        formDataEntries,
+        formUrlencodedEntries,
+        rawBody,
+      } = variables;
       cancelRequestRef.current = axios.CancelToken.source();
+
+      const contentType = headerEntries.find(
+        ({ key }) => key === "Content-Type"
+      )?.value;
+
+      const formData = createFormData(formDataEntries);
+      const body = !contentType
+        ? undefined
+        : contentType?.includes("form-data")
+        ? formData
+        : contentType?.includes("x-www-form-urlencoded")
+        ? qs.stringify(
+            formUrlencodedEntries.reduce<Record<string, string>>(
+              (acc, { key, value }) => {
+                acc[key] = value;
+                return acc;
+              },
+              {}
+            )
+          )
+        : rawBody;
+
+      const headers = headerEntries
+        .filter(({ checked }) => checked)
+        .reduce<Record<string, string>>((headers, headerEntry) => {
+          const { key, value } = headerEntry;
+          headers[key] = value;
+          return headers;
+        }, {});
+
+      console.log(headers, body, contentType);
 
       try {
         const response = await axios({
-          url: variables.url,
-          method: variables.method,
-          params: {},
-          headers: variables.headers,
-          data: variables.body,
+          url: url,
+          method: method,
+          headers,
+          data: body,
           cancelToken: cancelRequestRef.current.token,
+          responseType: "arraybuffer",
         });
         return response;
       } catch (error) {
         if (axios.isAxiosError(error) && error.message === "Network Error") {
-          return { status: "CORS", duration: 0, data: "" };
+          return { status: "CORS", duration: 0, data: "", headers: {} };
         }
         if (axios.isAxiosError(error) && error.response) return error?.response;
         throw error;
@@ -119,112 +194,30 @@ function App() {
     cancelRequestRef.current?.cancel();
   };
 
-  const method = watch("method");
-
   return (
-    <FormProvider {...form}>
-      <form
-        className="request"
-        onSubmit={handleSubmit((data) => {
-          sendRequest(data);
-        })}
+    <>
+      <Split
+        style={{ height: "100%" }}
+        gutterSize={11}
+        direction="vertical"
+        minSize={[80, 40]}
       >
-        <header>
-          <div className="endpoint">
-            <select
-              className="method"
-              {...register("method")}
-              data-method={method}
-            >
-              {["get", "post", "put", "patch", "delete", "head", "options"].map(
-                (method) => (
-                  <option key={method}>{method}</option>
-                )
-              )}
-            </select>
-            <div className="divider"></div>
-            <input
-              type="text"
-              placeholder="Enter URL or paste text"
-              {...register("url")}
-            />
-          </div>
-
-          {!isPending && (
-            <button className="fill" type="submit">
-              Send
-            </button>
+        <Request
+          isPending={isPending}
+          onSubmit={(data) => sendRequest(data)}
+          onCancel={handleCancel}
+        />
+        <WithProgressBar className="response-pane" isPending={isPending}>
+          {response && <Response response={response} />}
+          {!response && (
+            <div className="response-viewer-empty">
+              <img src={HitSend} />
+              <span>Click Send to get a response</span>
+            </div>
           )}
-          {isPending && (
-            <button className="fill" type="button" onClick={handleCancel}>
-              Cancel
-            </button>
-          )}
-        </header>
-        <div>
-          <ul className="tabs">
-            {["params", "headers", "body"].map((tab) => (
-              <li key={tab}>
-                <button type="button">{tab}</button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div style={{ display: "flex", flex: 1 }}>
-          <RequestBody />
-        </div>
-      </form>
-      <section className="response">
-        <header>
-          <ul className="tabs">
-            {["body", "cookies", "headers"].map((tab) => (
-              <li key={tab}>
-                <button type="button">{tab}</button>
-              </li>
-            ))}
-          </ul>
-          <div className="meta">
-            <div className="field">
-              <span>Status:</span>
-              <span className="success">
-                {response?.status}{" "}
-                {response?.status &&
-                  response?.status in statuses &&
-                  statuses[response?.status as any as keyof typeof statuses]}
-              </span>
-            </div>
-            <div className="field">
-              <span>Time:</span>
-              <span className="success">{(response as any)?.duration} ms</span>
-            </div>
-            <div className="field">
-              <span>Size:</span>
-              <span className="success">
-                {prettyBytes(String(response?.data).length || 0)}
-              </span>
-            </div>
-          </div>
-        </header>
-
-        <div className="tab-pane">
-          <div className="editor-wrapper">
-            <Editor
-              height="100%"
-              theme="vs-dark"
-              defaultLanguage="json"
-              options={{
-                readOnly: true,
-                minimap: { enabled: false },
-                scrollBeyondLastLine: false,
-              }}
-              value={
-                response?.data ? JSON.stringify(response.data, null, 2) : ""
-              }
-            />
-          </div>
-        </div>
-      </section>
-    </FormProvider>
+        </WithProgressBar>
+      </Split>
+    </>
   );
 }
 

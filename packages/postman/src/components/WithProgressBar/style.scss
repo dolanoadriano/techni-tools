@@ -1,0 +1,55 @@
+.WithProgressBar {
+  position: relative;
+
+  &[data-pending="true"] {
+    & > :not(.overlay) {
+      opacity: 0.2;
+    }
+  }
+
+  & > .overlay {
+    position: absolute;
+    z-index: 1000;
+    inset: 0;
+
+    .progress-bar {
+      width: 100%;
+      height: 2px;
+
+      & > div {
+        width: 50%;
+        height: 100%;
+        background-image: linear-gradient(
+          78.82deg,
+          var(--background-color-primary),
+          var(--base-color-brand) 49.98%,
+          var(--background-color-primary)
+        );
+        animation: loader-animation 1s ease-in-out infinite;
+      }
+    }
+
+    .info {
+      height: 90px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      text-align: center;
+
+      span {
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: white;
+      }
+    }
+  }
+}
+
+@keyframes loader-animation {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}

@@ -1,4 +1,7 @@
 :root {
+  --base-color-success: #0cbb52;
+  --background-color-primary: #212121;
+  --base-color-brand: #ff6c37;
   --content-color-info: #74aef6;
   --content-color-error: #f79a8e;
   --content-color-warning: #ffe47e;
@@ -45,6 +48,10 @@ a {
   color: inherit;
 }
 
+input {
+  color: inherit;
+}
+
 /* Resetowanie stylów list (zarówno kropkowanych, jak i numerowanych) oraz marginesów zewnętrznych i wewnętrznych */
 ul,
 ol {
@@ -66,7 +73,10 @@ button {
 input,
 button,
 select {
+  background: transparent;
   font-family: inherit;
+  font-size: inherit;
+  color: inherit;
 }
 
 .success {
@@ -79,6 +89,8 @@ body {
   display: flex;
   padding: 1rem;
   font-family: "Inter", sans-serif;
+  overflow: hidden;
+  height: 100%;
 }
 
 #root {
@@ -118,6 +130,48 @@ input[type="radio"] {
   }
 }
 
+input[type="checkbox"] {
+  appearance: none;
+  padding: 0;
+  margin: 0;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &:checked {
+    &::before {
+      background: white;
+      background-image: url("./check-gray.svg");
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+    }
+  }
+
+  &:not(:checked) {
+    &:hover {
+      &::before {
+        background-image: url("./check-gray.svg");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+      }
+    }
+  }
+
+  &::before {
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    content: "";
+    border: 1px solid #6b6b6b;
+    border-radius: 4px;
+  }
+}
+
 button {
   cursor: pointer;
   font-size: 0.875rem;
@@ -131,8 +185,50 @@ button {
     border: none;
     font-weight: 600;
 
+    &.gray {
+      background: #2b2b2b;
+    }
+
     &:hover {
       background: #0265d2;
     }
   }
+}
+
+h6 {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+  overflow: visible;
+}
+
+::-webkit-scrollbar-button {
+  height: 0;
+  width: 0;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #3b3b3b;
+}
+
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-track {
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 100px;
+}
+
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-track {
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 100px;
 }

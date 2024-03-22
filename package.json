@@ -25,7 +25,8 @@
     "link": "^1.5.1",
     "npm": "^9.7.1",
     "path": "^0.12.7",
-    "pretty-bytes": "^6.1.1"
+    "pretty-bytes": "^6.1.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.1.1",

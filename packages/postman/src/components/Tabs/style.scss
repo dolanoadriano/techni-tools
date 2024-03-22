@@ -1,0 +1,52 @@
+.Tabs {
+  ul {
+    display: flex;
+    gap: 1rem;
+    & > li {
+      &:hover {
+        color: white;
+      }
+
+      &.selected {
+        color: white;
+
+        button {
+          box-shadow: rgb(255, 108, 55) 0px -1px 0px 0px inset;
+        }
+      }
+
+      button {
+        background: transparent;
+        border: none;
+        text-transform: capitalize;
+        font-size: 0.75rem;
+        padding: 0;
+        padding-block: 0.5rem;
+      }
+    }
+  }
+
+  select {
+    display: none;
+    text-transform: capitalize;
+    border: none;
+    font-size: 0.75rem;
+    padding-inline: -2px;
+    padding-block: 0.5rem;
+    font-weight: 600;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  @media (max-width: 500px) {
+    ul {
+      display: none;
+    }
+
+    select {
+      display: initial;
+    }
+  }
+}

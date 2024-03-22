@@ -1,0 +1,38 @@
+.Response {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow: hidden;
+
+  & > header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+
+    .meta {
+      display: flex;
+      gap: 0.5rem;
+
+      .field {
+        font-size: 0.6875rem;
+        display: flex;
+        gap: 0.25rem;
+        color: #f0f8ff;
+
+        @media (max-width: 500px) {
+          .label {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .tab-pane {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+  }
+}
