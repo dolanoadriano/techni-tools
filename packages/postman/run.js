@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 const workspaceFilePath = path.join(
   // eslint-disable-next-line no-undef
   process.cwd(),
-  ".technipostman",
+  "technipostman",
   "workspace.json"
 );
 
