@@ -23,6 +23,8 @@ const workspaceFilePath = path.join(
   "workspace.json"
 );
 
+console.log(workspaceFilePath);
+
 async function readWorkspace() {
   try {
     const data = await fs.readFile(workspaceFilePath, "utf8");
