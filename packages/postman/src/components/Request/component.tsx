@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
 import { IoStop } from "react-icons/io5";
 
@@ -15,18 +15,7 @@ const Request: React.FC<Props> = (props) => {
   const { onSubmit, onCancel, isPending } = props;
   const [selectedTab, setSelectedTab] = useState<string>("params");
 
-  const form = useForm<RequestData>({
-    defaultValues: {
-      method: "get",
-      url: "",
-      paramEntries: [],
-      headerEntries: [],
-      rawBody: undefined,
-      rawBodyLanguage: "plain",
-      formDataEntries: [],
-      formUrlencodedEntries: [],
-    },
-  });
+  const form = useFormContext<RequestData>();
   const { register, handleSubmit, watch, setValue } = form;
 
   const handleCancel = () => {
@@ -75,79 +64,77 @@ const Request: React.FC<Props> = (props) => {
   }, [queryString]);
 
   return (
-    <FormProvider {...form}>
-      <form
-        className="Request"
-        onSubmit={handleSubmit((data) => {
-          onSubmit(data);
-        })}
-      >
-        <header>
-          <div className="endpoint">
-            <select
-              className="method"
-              {...register("method")}
-              data-method={method}
-            >
-              {["get", "post", "put", "patch", "delete", "head", "options"].map(
-                (method) => (
-                  <option key={method}>{method}</option>
-                )
-              )}
-            </select>
-            <div className="divider"></div>
-            <input
-              type="text"
-              placeholder="Enter URL or paste text"
-              {...register("url")}
-            />
-          </div>
-
-          {!isPending && (
-            <button className="fill" type="submit">
-              <span>Send</span>
-              <IoMdSend className="icon" />
-            </button>
-          )}
-          {isPending && (
-            <button className="fill gray" type="button" onClick={handleCancel}>
-              <span>Cancel</span>
-              <IoStop className="icon" />
-            </button>
-          )}
-        </header>
-        <div>
-          <Tabs
-            options={[
-              { value: "params", dot: paramEntries.length > 0 },
-              { value: "headers", count: headerEntries.length },
-              {
-                value: "body",
-                dot:
-                  rawBody ||
-                  formDataEntries.length ||
-                  formUrlencodedEntries.length,
-              },
-            ]}
-            value={selectedTab}
-            onChange={({ value }) => setSelectedTab(value)}
-            renderOption={({ value, dot, count }) => (
-              <div className="tab-option">
-                <span>{value}</span> {Boolean(dot) && <Dot />}{" "}
-                {count !== undefined && count > 0 && (
-                  <span className="tab-count">({count})</span>
-                )}
-              </div>
+    <form
+      className="Request"
+      onSubmit={handleSubmit((data) => {
+        onSubmit(data);
+      })}
+    >
+      <header>
+        <div className="endpoint">
+          <select
+            className="method"
+            {...register("method")}
+            data-method={method}
+          >
+            {["get", "post", "put", "patch", "delete", "head", "options"].map(
+              (method) => (
+                <option key={method}>{method}</option>
+              )
             )}
+          </select>
+          <div className="divider"></div>
+          <input
+            type="text"
+            placeholder="Enter URL or paste text"
+            {...register("url")}
           />
         </div>
-        <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-          {selectedTab === "params" && <RequestParams />}
-          {selectedTab === "headers" && <RequestHeaders />}
-          {selectedTab === "body" && <RequestBody />}
-        </div>
-      </form>
-    </FormProvider>
+
+        {!isPending && (
+          <button className="fill" type="submit">
+            <span>Send</span>
+            <IoMdSend className="icon" />
+          </button>
+        )}
+        {isPending && (
+          <button className="fill gray" type="button" onClick={handleCancel}>
+            <span>Cancel</span>
+            <IoStop className="icon" />
+          </button>
+        )}
+      </header>
+      <div>
+        <Tabs
+          options={[
+            { value: "params", dot: paramEntries.length > 0 },
+            { value: "headers", count: headerEntries.length },
+            {
+              value: "body",
+              dot:
+                rawBody ||
+                formDataEntries.length ||
+                formUrlencodedEntries.length,
+            },
+          ]}
+          value={selectedTab}
+          onChange={({ value }) => setSelectedTab(value)}
+          renderOption={({ value, dot, count }) => (
+            <div className="tab-option">
+              <span>{value}</span> {Boolean(dot) && <Dot />}{" "}
+              {count !== undefined && count > 0 && (
+                <span className="tab-count">({count})</span>
+              )}
+            </div>
+          )}
+        />
+      </div>
+      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+        {selectedTab === "params" && <RequestParams />}
+        {selectedTab === "headers" && <RequestHeaders />}
+        {selectedTab === "body" && <RequestBody />}
+      </div>
+    </form>
   );
 };
 

@@ -1,6 +1,6 @@
 import { Entry } from "../KeyValuePairs/types";
 
-export type RequestData = {
+export type RequestData<TType = "http"> = {
   method: string;
   url: string;
   paramEntries: Entry[];

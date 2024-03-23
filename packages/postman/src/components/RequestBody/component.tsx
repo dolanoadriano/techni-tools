@@ -2,6 +2,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 
+import { uniqueBy } from "../../utils";
 import { Entry } from "../KeyValuePairs/types";
 import { RequestData } from "../Request/types";
 import RequestBodyFormData from "../RequestBodyFormData";
@@ -9,11 +10,6 @@ import RequestBodyFormUrlencoded from "../RequestBodyFormUrlencoded";
 import RequestBodyRaw from "../RequestBodyRaw";
 import "./style.scss";
 import { Props } from "./types";
-
-const uniqueBy =
-  <TData extends object>(key: keyof TData) =>
-  (value: TData, index: number, array: TData[]) =>
-    index === array.findIndex((t) => t[key] === value[key]);
 
 const z = [
   {
