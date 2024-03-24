@@ -106,7 +106,9 @@ const RequestBody: React.FC<Props> = (props) => {
             }}
           >
             {z.filter(uniqueBy("bodyType")).map(({ bodyType }) => (
-              <option value={bodyType}>{bodyType}</option>
+              <option key={bodyType} value={bodyType}>
+                {bodyType}
+              </option>
             ))}
           </select>
           <fieldset>

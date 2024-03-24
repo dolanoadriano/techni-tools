@@ -1,11 +1,12 @@
 import axios from "axios";
 import qs from "qs";
-import React from "react";
+import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Split from "react-split";
 
 import HitSend from "../../assets/illustration-hit-send.svg";
 import useOptimisticMutation from "../../hooks/useOptimisticMutation";
+import postman from "../../modules/postman";
 import { Entry } from "../KeyValuePairs/types";
 import Request from "../Request";
 import { RequestData } from "../Request/types";
@@ -22,7 +23,7 @@ const createFormData = (entries: Entry<string | File>[]) => {
 };
 
 const Requester: React.FC<Props> = (props) => {
-  const {} = props;
+  const { requester, onChange } = props;
   const {
     mutate: sendRequest,
     cancel,
@@ -70,7 +71,7 @@ const Requester: React.FC<Props> = (props) => {
         }, {});
 
       try {
-        const response = await axios({
+        const response = await postman({
           url: url,
           method: method,
           headers,
@@ -90,17 +91,15 @@ const Requester: React.FC<Props> = (props) => {
   });
 
   const form = useForm<RequestData>({
-    defaultValues: {
-      method: "get",
-      url: "",
-      paramEntries: [],
-      headerEntries: [],
-      rawBody: undefined,
-      rawBodyLanguage: "plain",
-      formDataEntries: [],
-      formUrlencodedEntries: [],
-    },
+    defaultValues: requester.data,
   });
+  const { getValues } = form;
+
+  const requestData = getValues();
+
+  useEffect(() => {
+    onChange(requester.id, { ...requester, data: requestData });
+  }, [JSON.stringify(requestData)]);
 
   return (
     <FormProvider {...form}>

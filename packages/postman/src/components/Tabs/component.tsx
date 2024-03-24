@@ -27,7 +27,9 @@ const Tabs = <TOption extends { value: string }>(props: Props<TOption>) => {
         }
       >
         {options.map((option) => (
-          <option value={option.value}>{option.value}</option>
+          <option key={option.value} value={option.value}>
+            {option.value}
+          </option>
         ))}
       </select>
     </div>

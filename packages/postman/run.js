@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 import express from "express";
-import { promises as fs } from "fs";
+import fs from "fs-extra";
 import path from "path";
 import { fileURLToPath } from "url";
+import z from "zod";
 
 const app = express();
 
@@ -23,121 +24,75 @@ const workspaceFilePath = path.join(
   "workspace.json"
 );
 
-console.log(workspaceFilePath);
-
-async function readWorkspace() {
-  try {
-    const data = await fs.readFile(workspaceFilePath, "utf8");
-    return JSON.parse(data);
-  } catch (error) {
-    console.error("Error reading workspace:", error);
-    return { requesters: [] };
-  }
-}
-
-async function saveWorkspace(data) {
-  try {
-    await fs.writeFile(
-      workspaceFilePath,
-      JSON.stringify(data, null, 2),
-      "utf8"
-    );
-  } catch (error) {
-    console.error("Error saving workspace:", error);
-    throw new Error("Failed to save workspace.");
-  }
-}
-
-async function ensureWorkspaceFileExists() {
-  try {
-    const directoryPath = path.dirname(workspaceFilePath);
-    // Najpierw sprawdź, czy istnieje katalog
-    await fs.mkdir(directoryPath, { recursive: true });
-    console.log("Sprawdzono/utworzono katalog dla workspace.json.");
-
-    try {
-      // Następnie sprawdź, czy plik workspace.json istnieje w tym katalogu
-      await fs.access(workspaceFilePath);
-      console.log("Plik workspace.json już istnieje.");
-    } catch {
-      // Jeśli plik nie istnieje, utwórz go z domyślną zawartością
-      console.log("Plik workspace.json nie istnieje, tworzenie...");
-      await saveWorkspace({ requesters: [] });
-    }
-  } catch (error) {
-    console.error(
-      "Błąd podczas sprawdzania/tworzenia katalogu lub pliku workspace.json:",
-      error
-    );
-    throw error; // Rzucenie wyjątku zatrzyma dalsze uruchamianie serwera w przypadku błędu
-  }
-}
-
-ensureWorkspaceFileExists().catch(console.error);
-
-app.get("/workspace/requesters", async (req, res) => {
-  const workspace = await readWorkspace();
-  res.status(200).json(workspace.requesters);
+const entry = z.object({
+  id: z.string(),
+  key: z.string(),
+  value: z.string(),
+  type: z.enum(["text", "file"]),
+  checked: z.boolean().optional(),
+  readonly: z.boolean().optional(),
 });
 
-app.post("/workspace/requesters", async (req, res) => {
-  const newRequester = req.body;
-  const workspace = await readWorkspace();
-  workspace.requesters.push(newRequester);
-  await saveWorkspace(workspace);
-  res.status(201).json(newRequester);
+const requestData = z.object({
+  method: z.string(),
+  url: z.string(),
+  paramEntries: z.array(entry),
+  headerEntries: z.array(entry),
+  formDataEntries: z.array(entry),
+  formUrlencodedEntries: z.array(entry),
+  rawBody: z.string().optional(),
+  rawBodyLanguage: z.string(),
 });
 
-app.put("/workspace/requesters/:id", async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
-  const workspace = await readWorkspace();
-  const index = workspace.requesters.findIndex(
-    (requester) => requester.id === id
+const requester = z.object({
+  id: z.string(),
+  type: z.string(),
+  data: requestData,
+});
+
+const workspace = z.object({
+  requesters: z.array(requester),
+});
+
+const ensureFileContent = async (file, content) => {
+  await fs.ensureFile(file);
+  const prevContent = await fs.readFile(file, "utf8");
+  const isEmpty = prevContent.trim() === "";
+  if (isEmpty) await fs.outputFile(file, content);
+};
+
+const ensureWorkspace = async (req, res, next) => {
+  await ensureFileContent(
+    workspaceFilePath,
+    JSON.stringify({ requesters: [] })
   );
+  next();
+};
 
-  if (index !== -1) {
-    workspace.requesters[index] = updateData;
-    await saveWorkspace(workspace);
-    res.status(200).json(workspace.requesters[index]);
-  } else {
-    res.status(404).json({ message: "Requester not found" });
-  }
+app.use("/api/workspace", ensureWorkspace);
+
+app.get("/api/workspace", async (req, res) => {
+  const data = await fs.readJson(workspaceFilePath);
+  return res.status(200).json({ data });
 });
 
-app.patch("/workspace/requesters/:id", async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
-  const workspace = await readWorkspace();
-  const index = workspace.requesters.findIndex(
-    (requester) => requester.id === id
-  );
-
-  if (index !== -1) {
-    workspace.requesters[index] = {
-      ...workspace.requesters[index],
-      ...updateData,
-    };
-    await saveWorkspace(workspace);
-    res.status(200).json(workspace.requesters[index]);
-  } else {
-    res.status(404).json({ message: "Requester not found" });
+app.put(
+  "/api/workspace",
+  (req, res, next) => {
+    const { body } = req;
+    const { success, error } = workspace.safeParse(body);
+    success ? next() : next(error);
+  },
+  async (req, res) => {
+    const { body } = req;
+    await fs.writeJson(workspaceFilePath, body);
+    return res.status(200).json({});
   }
-});
+);
 
-app.delete("/workspace/requesters/:id", async (req, res) => {
-  const { id } = req.params;
-  const workspace = await readWorkspace();
-  const newRequesters = workspace.requesters.filter(
-    (requester) => requester.id !== id
-  );
-
-  if (workspace.requesters.length !== newRequesters.length) {
-    await saveWorkspace({ ...workspace, requesters: newRequesters });
-    res.status(204).send();
-  } else {
-    res.status(404).json({ message: "Requester not found" });
-  }
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err });
 });
 
 /*
