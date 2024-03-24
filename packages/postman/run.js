@@ -1,5 +1,9 @@
 #!/usr/bin/env node
+
+/* eslint-disable no-unreachable */
+import axios from "axios";
 import express from "express";
+import "express-async-errors";
 import fs from "fs-extra";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -27,7 +31,10 @@ const workspaceFilePath = path.join(
 const entry = z.object({
   id: z.string(),
   key: z.string(),
-  value: z.string(),
+  value: z.preprocess(
+    (val) => (typeof val === "string" ? val : ""),
+    z.string()
+  ),
   type: z.enum(["text", "file"]),
   checked: z.boolean().optional(),
   readonly: z.boolean().optional(),
@@ -53,6 +60,16 @@ const requester = z.object({
 const workspace = z.object({
   requesters: z.array(requester),
 });
+
+async function safeAxios(options) {
+  try {
+    const response = await axios(options);
+    return response;
+  } catch (error) {
+    if (error.response) return error.response;
+    throw error;
+  }
+}
 
 const ensureFileContent = async (file, content) => {
   await fs.ensureFile(file);
@@ -80,7 +97,8 @@ app.put(
   "/api/workspace",
   (req, res, next) => {
     const { body } = req;
-    const { success, error } = workspace.safeParse(body);
+    const { data, success, error } = workspace.safeParse(body);
+    req.body = data;
     success ? next() : next(error);
   },
   async (req, res) => {
@@ -90,20 +108,23 @@ app.put(
   }
 );
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).json({ error: err });
-});
+app.all(
+  "/api/proxy",
+  (req, res, next) => {
+    const { headers } = req;
+    const targetUrl = headers["postman-target-url"];
+    if (!targetUrl) return next("'postman-target-url' header is undefined");
+    if (!targetUrl.startsWith("http")) return next("invalid target url");
+    next();
+  },
+  async (req, res) => {
+    const { method, headers } = req;
+    const targetUrl = headers["postman-target-url"];
 
-/*
-app.all("/proxy", async (req, res) => {
-  const { method, headers } = req;
-  const targetUrl = headers["Postman-Target-Url"] || "/";
-  try {
-    const response = await axios({
+    const response = await safeAxios({
       method,
       url: targetUrl,
-      headers: { ...req.headers, host: null },
+      headers: { ...headers, host: null },
       responseType: "stream",
     });
 
@@ -114,14 +135,13 @@ app.all("/proxy", async (req, res) => {
     });
 
     response.data.pipe(res);
-  } catch (error) {
-    console.error("Błąd podczas przekierowywania żądania:", error);
-    res
-      .status(error.response ? error.response.status : 500)
-      .send("Wystąpił błąd podczas przekierowywania żądania");
   }
+);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ error: err });
 });
-*/
 
 // eslint-disable-next-line no-undef
 const port = process.env.PORT || 9999;

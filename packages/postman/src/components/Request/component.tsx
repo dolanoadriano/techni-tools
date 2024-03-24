@@ -129,7 +129,7 @@ const Request: React.FC<Props> = (props) => {
           )}
         />
       </div>
-      <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      <div style={{ display: "flex", flex: 1, overflowY: "scroll" }}>
         {selectedTab === "params" && <RequestParams />}
         {selectedTab === "headers" && <RequestHeaders />}
         {selectedTab === "body" && <RequestBody />}

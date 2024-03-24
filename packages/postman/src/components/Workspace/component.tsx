@@ -27,6 +27,7 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
   }, [JSON.stringify(workspace.requesters), selectedRequester?.id]);
 
   useEffect(() => {
+    console.log(throttledWorkspace);
     onChange(throttledWorkspace);
   }, [JSON.stringify(throttledWorkspace)]);
 
