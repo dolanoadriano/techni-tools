@@ -1,6 +1,7 @@
 import { Requester } from "../Requester/types";
 
 export type Workspace = {
+  selectedRequesterId?: string | null;
   requesters: Requester[];
 };
 

@@ -58,6 +58,7 @@ const requester = z.object({
 });
 
 const workspace = z.object({
+  selectedRequesterId: z.string().optional(),
   requesters: z.array(requester),
 });
 

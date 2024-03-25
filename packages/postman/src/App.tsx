@@ -18,12 +18,8 @@ function App() {
   });
   const { data: workspace } = data || {};
 
-  const { mutate: updateWorkspace } = useMutation<
-    {},
-    any,
-    { requesters: Requester[] }
-  >({
-    mutationFn: ({ requesters }) => axios.put("/api/workspace", { requesters }),
+  const { mutate: updateWorkspace } = useMutation<{}, any, Workspace>({
+    mutationFn: (workspace) => axios.put("/api/workspace", workspace),
   });
 
   useEffect(() => {

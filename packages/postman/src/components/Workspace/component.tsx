@@ -14,21 +14,26 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
   const [workspace, setWorkspace] = useState<Workspace>(initialWorkspace);
   const throttledWorkspace = useThrottle(workspace, 5000);
 
-  const [selectedRequesterId, setSelectedRequesterId] = useState<string>();
+  const { requesters, selectedRequesterId } = workspace;
 
-  const selectedRequester = workspace.requesters.find(
+  const selectedRequester = requesters.find(
     ({ id }) => id === selectedRequesterId
   );
+
+  const patchWorkspace = (workspace: Partial<Workspace>) => {
+    setWorkspace((prevWorkspace) => ({ ...prevWorkspace, ...workspace }));
+  };
+
+  console.log(workspace);
 
   useEffect(() => {
     if (selectedRequester?.id) return;
     if (!workspace.requesters.length) return;
 
-    setSelectedRequesterId(workspace.requesters[0].id);
+    patchWorkspace({ selectedRequesterId: workspace.requesters[0].id });
   }, [JSON.stringify(workspace.requesters), selectedRequester?.id]);
 
   useEffect(() => {
-    console.log(throttledWorkspace);
     onChange(throttledWorkspace);
   }, [JSON.stringify(throttledWorkspace)]);
 
@@ -48,8 +53,10 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
       },
     };
     const nextRequesters = [...workspace.requesters, newRequester];
-    setWorkspace({ ...workspace, requesters: nextRequesters });
-    setSelectedRequesterId(newRequester.id);
+    patchWorkspace({
+      requesters: nextRequesters,
+      selectedRequesterId: newRequester.id,
+    });
   };
 
   const handleRemoveButtonClick = (id: Requester["id"]) => {
@@ -86,7 +93,7 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
               >
                 <button
                   className="select"
-                  onClick={() => setSelectedRequesterId(id)}
+                  onClick={() => patchWorkspace({ selectedRequesterId: id })}
                 >
                   <span className="icon" data-method={data?.method}>
                     {data?.method}
