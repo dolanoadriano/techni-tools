@@ -20,8 +20,7 @@ const x: Record<
 
 const ResponseBody: React.FC<Props> = (props) => {
   const { data, contentType } = props;
-
-  const mimeType = contentType.split(";")[0];
+  const mimeType = contentType?.split(";")[0] || "text/plain";
 
   return (
     <div className="ResponseBody">

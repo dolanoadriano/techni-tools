@@ -7,12 +7,13 @@ import Split from "react-split";
 import HitSend from "../../assets/illustration-hit-send.svg";
 import useOptimisticMutation from "../../hooks/useOptimisticMutation";
 import postman from "../../modules/postman";
+import EmptyResponse from "../EmptyResponse";
 import { Entry } from "../KeyValuePairs/types";
+import Pane from "../Pane";
 import Request from "../Request";
 import { RequestData } from "../Request/types";
 import Response from "../Response";
 import { PostmanResponse } from "../Response/types";
-import WithProgressBar from "../WithProgressBar";
 import "./style.scss";
 import { Props } from "./types";
 
@@ -81,6 +82,7 @@ const Requester: React.FC<Props> = (props) => {
         });
         return response;
       } catch (error) {
+        console.log(error, "@");
         if (axios.isAxiosError(error) && error.message === "Network Error") {
           return { status: "CORS", duration: 0, data: "", headers: {} };
         }
@@ -107,22 +109,19 @@ const Requester: React.FC<Props> = (props) => {
         style={{ height: "100%" }}
         gutterSize={11}
         direction="vertical"
-        minSize={[80, 40]}
+        minSize={[92, 32]}
       >
-        <Request
-          isPending={isPending}
-          onSubmit={(data) => sendRequest(data)}
-          onCancel={() => cancel()}
-        />
-        <WithProgressBar className="response-pane" isPending={isPending}>
+        <Pane className="request-pane">
+          <Request
+            isPending={isPending}
+            onSubmit={(data) => sendRequest(data)}
+            onCancel={() => cancel()}
+          />
+        </Pane>
+        <Pane className="response-pane" isPending={isPending}>
           {response && <Response response={response} />}
-          {!response && (
-            <div className="response-viewer-empty">
-              <img src={HitSend} />
-              <span>Click Send to get a response</span>
-            </div>
-          )}
-        </WithProgressBar>
+          {!response && <EmptyResponse />}
+        </Pane>
       </Split>
     </FormProvider>
   );

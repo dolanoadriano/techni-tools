@@ -1,6 +1,6 @@
 export type OwnProps = {
   data: any;
-  contentType: string;
+  contentType: string | undefined;
 };
 
 export type Props = OwnProps;

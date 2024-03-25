@@ -17,6 +17,8 @@ const RequestHeaders: React.FC<Props> = (props) => {
     <div className={`RequestHeaders`}>
       <h6>Headers</h6>
       <KeyValuePairs
+        canCreate
+        canCheck
         entries={headerEntries}
         setEntries={(entries) => setValue("headerEntries", entries)}
       />

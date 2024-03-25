@@ -12,6 +12,8 @@ const Response: React.FC<Props> = (props) => {
   const { response } = props;
   const [selectedTab, setSelectedTab] = useState<string>("body");
 
+  const size = Number(response.headers["content-length"]?.toString()) || 0;
+
   return (
     <div className="Response">
       <header>
@@ -55,14 +57,14 @@ const Response: React.FC<Props> = (props) => {
           <div className="field">
             <span className="label">Size:</span>
             <span className="value success">
-              {prettyBytes(String(response?.data).length || 0)}
+              {prettyBytes(size ?? String(response?.data).length ?? 0)}
             </span>
           </div>
         </div>
       </header>
 
       {response?.data && (
-        <div className="tab-pane">
+        <div className="tab-content">
           {selectedTab === "body" && (
             <ResponseBody
               data={response?.data}

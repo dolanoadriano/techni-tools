@@ -40,6 +40,13 @@
 
       input {
         width: 0;
+
+        &:focus {
+          outline: 3px solid #097bed;
+          border-radius: 0 4px 4px 0;
+          z-index: 1;
+          transition: 0.3s;
+        }
       }
 
       input,
@@ -54,10 +61,6 @@
         &:-webkit-autofill,
         &:-webkit-autofill:focus {
           background: none;
-        }
-
-        &:focus {
-          outline: none;
         }
       }
 

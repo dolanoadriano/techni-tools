@@ -5,7 +5,7 @@ import "./style.scss";
 import { Entry, Props } from "./types";
 
 const KeyValuePairs = <TValue extends string | File>(props: Props<TValue>) => {
-  const { entries, canChangeType, setEntries } = props;
+  const { entries, canCheck, canChangeType, canCreate, setEntries } = props;
 
   const nextEntry: Entry<TValue> = {
     id: uuidv4(),
@@ -36,7 +36,7 @@ const KeyValuePairs = <TValue extends string | File>(props: Props<TValue>) => {
         <tr>
           <td>
             <div>
-              {entries.length > 0 && (
+              {canCheck && entries.length > 0 && (
                 <input
                   type="checkbox"
                   checked={entries.every(({ checked }) => checked)}
@@ -61,13 +61,13 @@ const KeyValuePairs = <TValue extends string | File>(props: Props<TValue>) => {
         </tr>
       </thead>
       <tbody>
-        {[...entries, nextEntry].map((entry, index) => (
+        {(canCreate ? [...entries, nextEntry] : entries).map((entry, index) => (
           <KeyValue
             key={entry.id}
             entry={entry}
             canChangeType={canChangeType}
             canRemove={index < entries.length}
-            canCheck={index < entries.length}
+            canCheck={canCheck && index < entries.length}
             showPlaceholder={index >= entries.length}
             onChange={handleChange}
             onRemove={handleRemove}

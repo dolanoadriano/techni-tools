@@ -17,6 +17,8 @@ const RequestParams: React.FC<Props> = (props) => {
     <div className={`RequestParams`}>
       <h6>Query Params</h6>
       <KeyValuePairs
+        canCreate
+        canCheck
         entries={paramEntries}
         setEntries={(entries) => setValue("paramEntries", entries)}
       />

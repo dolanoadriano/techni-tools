@@ -3,19 +3,22 @@ import { AxiosResponse, isAxiosError } from "axios";
 import { blobToBase64 } from "../../utils";
 
 const decodeResBody = async (response: AxiosResponse) => {
-  const contentType = response.headers["content-type"];
-  const mimeType = contentType.split(";")[0];
+  const contentType: string | undefined = response.headers["content-type"];
 
+  const mimeType = contentType?.split(";")[0];
+
+  if (!mimeType) return " ";
   if (mimeType.includes("application/json")) {
     return JSON.parse(new TextDecoder().decode(response.data));
-  } else if (["image/", "video/", "audio/"].some((x) => mimeType.includes(x))) {
+  }
+  if (["image/", "video/", "audio/"].some((x) => mimeType.includes(x))) {
     const blob = new Blob([response.data], { type: contentType });
     return await blobToBase64(blob);
-  } else if (mimeType.includes("text/")) {
-    return new TextDecoder().decode(response.data);
-  } else {
-    return response.data;
   }
+  if (mimeType.includes("text/")) {
+    return new TextDecoder().decode(response.data);
+  }
+  return response.data;
 };
 
 export const decodeResponse = async (response: AxiosResponse) => {
