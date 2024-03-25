@@ -35,6 +35,7 @@ const useOptimisticMutation = <
 ): UseOptimisticMutationResult<TData, TError, TVariables> => {
   const abortControllerRef = useRef<AbortController | null>(null);
   const [cachedData, setCachedData] = useState<TData | undefined>(undefined);
+  const [cachedError, setCachedError] = useState<TError | undefined>(undefined);
 
   const mutateFnWithAbortController: MutateFunction<
     TData,
@@ -52,14 +53,25 @@ const useOptimisticMutation = <
     TVariables
   >["onSuccess"] = (...args) => {
     setCachedData(args[0]);
+    setCachedError(undefined);
     options.onSuccess?.(...args);
+  };
+
+  const handleError: UseMutationOptions<
+    TData,
+    TError,
+    TVariables
+  >["onError"] = (...args) => {
+    setCachedError(args[0]);
+    setCachedData(undefined);
+    options.onError?.(...args);
   };
 
   const cancel = (reason?: any) => {
     abortControllerRef.current?.abort(reason);
   };
 
-  const { data, ...restMutationResult } = useMutation<
+  const { data, error, ...restMutationResult } = useMutation<
     TData,
     TError,
     TVariables
@@ -68,6 +80,7 @@ const useOptimisticMutation = <
       ...options,
       mutationFn: mutateFnWithAbortController,
       onSuccess: handleSuccess,
+      onError: handleError,
     },
     queryClient
   );
@@ -75,6 +88,7 @@ const useOptimisticMutation = <
   const result = {
     ...restMutationResult,
     data: data || cachedData,
+    error: error || cachedError,
     cancel,
   } as UseOptimisticMutationResult<TData, TError, TVariables>;
 

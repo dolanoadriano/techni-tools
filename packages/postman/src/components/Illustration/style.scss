@@ -1,0 +1,12 @@
+.Illustration {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+
+  span {
+    font-size: 0.75rem;
+    color: #a6a6a6;
+  }
+}

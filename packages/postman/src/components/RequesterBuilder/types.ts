@@ -1,6 +1,5 @@
 export type OwnProps = {
-  illustrationSrc: string;
-  text: string;
+  onCreate: () => void;
 };
 
 export type Props = OwnProps;

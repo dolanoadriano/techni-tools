@@ -6,6 +6,7 @@ import { v4 as uuid } from "uuid";
 
 import RequesterComponent from "../Requester";
 import { Requester } from "../Requester/types";
+import RequesterBuilder from "../RequesterBuilder";
 import { Props, Workspace } from "./types";
 
 const WorkspaceComponent: React.FC<Props> = (props) => {
@@ -120,6 +121,9 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
           requester={selectedRequester}
           onChange={handleRequesterChange}
         ></RequesterComponent>
+      )}
+      {!selectedRequester && (
+        <RequesterBuilder onCreate={handleCreateButtonClick} />
       )}
     </>
   );

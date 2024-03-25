@@ -1,6 +1,6 @@
 export type OwnProps = {
-  illustrationSrc: string;
-  text: string;
+  src: string;
+  description?: string;
 };
 
 export type Props = OwnProps;

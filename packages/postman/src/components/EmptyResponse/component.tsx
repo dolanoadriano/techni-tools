@@ -1,11 +1,11 @@
 import React from "react";
 
-import HitSend from "../../assets/illustration-hit-send.svg";
+import Illustration from "../Illustration";
 import "./style.scss";
 import { Props } from "./types";
 
 const EmptyResponse: React.FC<Props> = (props) => {
-  const {} = props;
+  const { illustrationSrc, text } = props;
 
   return (
     <div className={`EmptyResponse`}>
@@ -13,8 +13,7 @@ const EmptyResponse: React.FC<Props> = (props) => {
         <span>Response</span>
       </header>
       <div>
-        <img src={HitSend} />
-        <span>Click Send to get a response</span>
+        <Illustration src={illustrationSrc} description={text} />
       </div>
     </div>
   );

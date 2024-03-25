@@ -1,4 +1,6 @@
 .Tabs {
+  user-select: none;
+
   ul {
     display: flex;
     gap: 1rem;

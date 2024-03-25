@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Split from "react-split";
 
+import Astronaut from "../../assets/astronaut.svg";
 import HitSend from "../../assets/illustration-hit-send.svg";
 import useOptimisticMutation from "../../hooks/useOptimisticMutation";
 import postman from "../../modules/postman";
@@ -30,6 +31,7 @@ const Requester: React.FC<Props> = (props) => {
     cancel,
     isPending,
     data: response,
+    error,
   } = useOptimisticMutation<PostmanResponse, any, RequestData>({
     mutationKey: [],
     mutationFn: async (variables, { abortController }) => {
@@ -83,9 +85,7 @@ const Requester: React.FC<Props> = (props) => {
         return response;
       } catch (error) {
         console.log(error, "@");
-        if (axios.isAxiosError(error) && error.message === "Network Error") {
-          return { status: "CORS", duration: 0, data: "", headers: {} };
-        }
+
         if (axios.isAxiosError(error) && error.response) return error?.response;
         throw error;
       }
@@ -120,7 +120,18 @@ const Requester: React.FC<Props> = (props) => {
         </Pane>
         <Pane className="response-pane" isPending={isPending}>
           {response && <Response response={response} />}
-          {!response && <EmptyResponse />}
+          {!response && !error && (
+            <EmptyResponse
+              illustrationSrc={HitSend}
+              text={"Click Send to get a response"}
+            />
+          )}
+          {!response && error && (
+            <EmptyResponse
+              illustrationSrc={Astronaut}
+              text={"Could not send request"}
+            />
+          )}
         </Pane>
       </Split>
     </FormProvider>
