@@ -50,6 +50,7 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
         formUrlencodedEntries: [],
         rawBody: undefined,
         rawBodyLanguage: "plain",
+        selectedTab: "params",
       },
     };
     const nextRequesters = [...workspace.requesters, newRequester];

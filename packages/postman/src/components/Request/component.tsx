@@ -13,7 +13,6 @@ import { Props, RequestData } from "./types";
 
 const Request: React.FC<Props> = (props) => {
   const { onSubmit, onCancel, isPending } = props;
-  const [selectedTab, setSelectedTab] = useState<string>("params");
 
   const form = useFormContext<RequestData>();
   const { register, handleSubmit, watch, setValue } = form;
@@ -28,6 +27,7 @@ const Request: React.FC<Props> = (props) => {
   const rawBody = watch("rawBody");
   const formDataEntries = watch("formDataEntries");
   const formUrlencodedEntries = watch("formUrlencodedEntries");
+  const selectedTab = watch("selectedTab") ?? "params";
   const url = watch("url");
   const queryString = url.split("?")[1] || "";
 
@@ -118,7 +118,7 @@ const Request: React.FC<Props> = (props) => {
             },
           ]}
           value={selectedTab}
-          onChange={({ value }) => setSelectedTab(value)}
+          onChange={({ value }) => setValue("selectedTab", value)}
           renderOption={({ value, dot, count }) => (
             <div className="tab-option">
               <span>{value}</span> {Boolean(dot) && <Dot />}{" "}

@@ -9,6 +9,7 @@ export type RequestData<TType = "http"> = {
   formUrlencodedEntries: Entry[];
   rawBody: string | undefined;
   rawBodyLanguage: string;
+  selectedTab: string;
 };
 
 export type OwnProps = {

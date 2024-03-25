@@ -49,6 +49,7 @@ const requestData = z.object({
   formUrlencodedEntries: z.array(entry),
   rawBody: z.string().optional(),
   rawBodyLanguage: z.string(),
+  selectedTab: z.string(),
 });
 
 const requester = z.object({
