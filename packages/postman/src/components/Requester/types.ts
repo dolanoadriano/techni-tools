@@ -7,7 +7,7 @@ export type Requester<TType = "http"> = {
 };
 
 export type OwnProps = {
-  requester: Requester;
+  initialRequester: Requester;
   onChange: (id: Requester["id"], nextRequester: Requester) => void;
 };
 
