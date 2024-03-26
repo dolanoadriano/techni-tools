@@ -18,6 +18,7 @@ const RequestBodyFormData: React.FC<Props> = (props) => {
       <KeyValuePairs
         canChangeType
         canCreate
+        canRemove
         canCheck
         entries={formDataEntries}
         setEntries={(entries) => setValue("formDataEntries", entries)}

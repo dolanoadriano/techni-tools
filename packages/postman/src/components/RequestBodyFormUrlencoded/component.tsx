@@ -17,6 +17,7 @@ const RequestBodyFormUrlencoded: React.FC<Props> = (props) => {
     <div className={`RequestBodyFormUrlencoded`}>
       <KeyValuePairs
         canCreate
+        canRemove
         canCheck
         entries={formDataEntries}
         setEntries={(entries) => setValue("formUrlencodedEntries", entries)}

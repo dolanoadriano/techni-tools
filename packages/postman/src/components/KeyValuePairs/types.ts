@@ -1,3 +1,5 @@
+import { ControlName } from "../KeyValue/types";
+
 export type Entry<TValue extends string | File = string> = {
   id: string;
   key: string;
@@ -10,8 +12,10 @@ export type Entry<TValue extends string | File = string> = {
 export type OwnProps<TValue extends string | File> = {
   canChangeType?: boolean;
   canCreate?: boolean;
+  canRemove?: boolean;
   canCheck?: boolean;
   entries: Entry<TValue>[];
+  disabled?: boolean | Partial<Record<ControlName<TValue>, boolean>>;
   setEntries: (entries: Entry<TValue>[]) => void;
 };
 

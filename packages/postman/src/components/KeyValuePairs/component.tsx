@@ -5,7 +5,15 @@ import "./style.scss";
 import { Entry, Props } from "./types";
 
 const KeyValuePairs = <TValue extends string | File>(props: Props<TValue>) => {
-  const { entries, canCheck, canChangeType, canCreate, setEntries } = props;
+  const {
+    entries,
+    disabled,
+    canCheck,
+    canRemove,
+    canChangeType,
+    canCreate,
+    setEntries,
+  } = props;
 
   const nextEntry: Entry<TValue> = {
     id: uuidv4(),
@@ -64,9 +72,10 @@ const KeyValuePairs = <TValue extends string | File>(props: Props<TValue>) => {
         {(canCreate ? [...entries, nextEntry] : entries).map((entry, index) => (
           <KeyValue
             key={entry.id}
+            disabled={disabled}
             entry={entry}
             canChangeType={canChangeType}
-            canRemove={index < entries.length}
+            canRemove={canRemove && index < entries.length}
             canCheck={canCheck && index < entries.length}
             showPlaceholder={index >= entries.length}
             onChange={handleChange}

@@ -8,6 +8,7 @@ import Astronaut from "../../assets/astronaut.svg";
 import HitSend from "../../assets/illustration-hit-send.svg";
 import useOptimisticMutation from "../../hooks/useOptimisticMutation";
 import postman from "../../modules/postman";
+import { interpolatePathVariables } from "../../utils";
 import EmptyResponse from "../EmptyResponse";
 import { Entry } from "../KeyValuePairs/types";
 import Pane from "../Pane";
@@ -41,6 +42,7 @@ const Requester: React.FC<Props> = (props) => {
         headerEntries,
         formDataEntries,
         formUrlencodedEntries,
+        pathVariableEntries,
         rawBody,
       } = variables;
 
@@ -75,7 +77,10 @@ const Requester: React.FC<Props> = (props) => {
 
       try {
         const response = await postman({
-          url: url,
+          url: interpolatePathVariables(
+            url,
+            pathVariableEntries.map(({ key, value }) => [key, value])
+          ),
           method: method,
           headers,
           data: body,

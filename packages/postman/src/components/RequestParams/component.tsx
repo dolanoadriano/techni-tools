@@ -12,16 +12,30 @@ const RequestParams: React.FC<Props> = (props) => {
   const { watch, setValue } = useFormContext<RequestData>();
 
   const paramEntries = watch("paramEntries");
+  const pathVariableEntries = watch("pathVariableEntries");
 
   return (
     <div className={`RequestParams`}>
-      <h6>Query Params</h6>
-      <KeyValuePairs
-        canCreate
-        canCheck
-        entries={paramEntries}
-        setEntries={(entries) => setValue("paramEntries", entries)}
-      />
+      <section>
+        <h6>Query Params</h6>
+        <KeyValuePairs
+          canCreate
+          canCheck
+          canRemove
+          entries={paramEntries}
+          setEntries={(entries) => setValue("paramEntries", entries)}
+        />
+      </section>
+      {pathVariableEntries?.length > 0 && (
+        <section>
+          <h6>Path Variables</h6>
+          <KeyValuePairs
+            disabled={{ key: true }}
+            entries={pathVariableEntries}
+            setEntries={(entries) => setValue("pathVariableEntries", entries)}
+          />
+        </section>
+      )}
     </div>
   );
 };

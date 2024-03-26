@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { IoMdSend } from "react-icons/io";
 import { IoStop } from "react-icons/io5";
+import { v4 as uuidv4 } from "uuid";
 
+import { extractPathVariableKeys, merge } from "../../utils";
 import Dot from "../Dot";
+import { Entry } from "../KeyValuePairs/types";
 import RequestBody from "../RequestBody";
 import RequestHeaders from "../RequestHeaders";
 import RequestParams from "../RequestParams";
@@ -17,19 +20,17 @@ const Request: React.FC<Props> = (props) => {
   const form = useFormContext<RequestData>();
   const { register, handleSubmit, watch, setValue } = form;
 
-  const handleCancel = () => {
-    onCancel();
-  };
-
   const method = watch("method");
   const paramEntries = watch("paramEntries");
   const headerEntries = watch("headerEntries");
   const rawBody = watch("rawBody");
   const formDataEntries = watch("formDataEntries");
   const formUrlencodedEntries = watch("formUrlencodedEntries");
+  const pathVariableEntries = watch("pathVariableEntries");
   const selectedTab = watch("selectedTab") ?? "params";
   const url = watch("url");
-  const queryString = url.split("?")[1] || "";
+  const [urlPath = "", queryString = ""] = url.split("?");
+  const pathVariables = extractPathVariableKeys(urlPath);
 
   useEffect(() => {
     const newQueryString = paramEntries
@@ -42,6 +43,22 @@ const Request: React.FC<Props> = (props) => {
     }`;
     queryString !== newQueryString && setValue("url", newUrl);
   }, [paramEntries]);
+
+  useEffect(() => {
+    const newPathVariableEntries: Entry[] = pathVariables.map((variable) => ({
+      id: uuidv4(),
+      type: "text",
+      key: variable,
+      value: "",
+      checked: true,
+    }));
+    const mergedPathVariableEntries = merge(
+      newPathVariableEntries,
+      pathVariableEntries.filter((z) => pathVariables.includes(z.key)),
+      (entry) => entry.key
+    );
+    setValue("pathVariableEntries", mergedPathVariableEntries);
+  }, [JSON.stringify(pathVariables)]);
 
   useEffect(() => {
     // const queryString = url.split("?")[1] || "";
@@ -62,6 +79,10 @@ const Request: React.FC<Props> = (props) => {
     //JSON.stringify(paramEntries) !== JSON.stringify(newParamEntries) &&
     //  setValue("paramEntries", newParamEntries);
   }, [queryString]);
+
+  const handleCancel = () => {
+    onCancel();
+  };
 
   return (
     <form

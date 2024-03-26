@@ -1,9 +1,10 @@
 import "./style.scss";
-import { Props } from "./types";
+import { ControlName, Props } from "./types";
 
 const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
   const {
     entry,
+    disabled,
     showPlaceholder,
     canChangeType,
     canCheck,
@@ -13,14 +14,22 @@ const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
   } = props;
   const { id, type, key, value, readonly, checked } = entry;
 
+  const getIsDisabled = (controlName: ControlName<TValue>) => {
+    if (disabled === undefined) return undefined;
+    if (typeof disabled === "boolean") return disabled;
+    return disabled[controlName];
+  };
+
   return (
     <tr className="KeyValue">
       <td>
         <div>
           {canCheck && (
             <input
+              name={"type"}
               type="checkbox"
               checked={checked}
+              disabled={getIsDisabled("type")}
               onChange={(event) => {
                 onChange?.(id, { ...entry, checked: event.target.checked });
               }}
@@ -31,10 +40,12 @@ const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
       <td>
         <div>
           <input
+            name={"key"}
             type="text"
             placeholder={showPlaceholder ? "Key" : undefined}
             readOnly={readonly}
             value={key}
+            disabled={getIsDisabled("key")}
             onChange={(event) => {
               event.preventDefault();
               onChange?.(id, { ...entry, key: event.target.value });
@@ -42,8 +53,9 @@ const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
           />
           {canChangeType && (
             <select
+              name={"type"}
               value={type}
-              disabled={readonly}
+              disabled={readonly || getIsDisabled("type")}
               onChange={(event) => {
                 onChange?.(id, {
                   ...entry,
@@ -62,10 +74,12 @@ const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
         <div>
           {type === "text" && (
             <input
+              name={"value"}
               type={"text"}
               placeholder={showPlaceholder ? "Value" : undefined}
               value={value as string}
               readOnly={readonly}
+              disabled={getIsDisabled("value")}
               onChange={(event) => {
                 event.preventDefault();
                 onChange?.(id, {
@@ -77,6 +91,7 @@ const KeyValue = <TValue extends string | File>(props: Props<TValue>) => {
           )}
           {type === "file" && (
             <input
+              name={"value"}
               type={"file"}
               placeholder={showPlaceholder ? "Value" : undefined}
               readOnly={readonly}

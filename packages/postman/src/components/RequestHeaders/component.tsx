@@ -19,6 +19,7 @@ const RequestHeaders: React.FC<Props> = (props) => {
       <KeyValuePairs
         canCreate
         canCheck
+        canRemove
         entries={headerEntries}
         setEntries={(entries) => setValue("headerEntries", entries)}
       />

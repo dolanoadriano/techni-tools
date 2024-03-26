@@ -45,6 +45,7 @@ const requestData = z.object({
   url: z.string(),
   paramEntries: z.array(entry),
   headerEntries: z.array(entry),
+  pathVariableEntries: z.array(entry),
   formDataEntries: z.array(entry),
   formUrlencodedEntries: z.array(entry),
   rawBody: z.string().optional(),

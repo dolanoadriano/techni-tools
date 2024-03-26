@@ -4,6 +4,7 @@ export type RequestData<TType = "http"> = {
   method: string;
   url: string;
   paramEntries: Entry[];
+  pathVariableEntries: Entry[];
   headerEntries: Entry[];
   formDataEntries: Entry<string | File>[];
   formUrlencodedEntries: Entry[];

@@ -24,8 +24,6 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
     setWorkspace((prevWorkspace) => ({ ...prevWorkspace, ...workspace }));
   };
 
-  console.log(workspace);
-
   useEffect(() => {
     if (selectedRequester?.id) return;
     if (!workspace.requesters.length) return;
@@ -48,6 +46,7 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
         headerEntries: [],
         formDataEntries: [],
         formUrlencodedEntries: [],
+        pathVariableEntries: [],
         rawBody: undefined,
         rawBodyLanguage: "plain",
         selectedTab: "params",

@@ -1,8 +1,10 @@
 import { Entry } from "../KeyValuePairs/types";
 
+export type ControlName<TValue extends string | File> = keyof Entry<TValue>;
+
 export type OwnProps<TValue extends string | File> = {
   entry: Entry<TValue>;
-  disabled?: boolean;
+  disabled?: boolean | Partial<Record<ControlName<TValue>, boolean>>;
   canChangeType?: boolean;
   canRemove?: boolean;
   canCheck?: boolean;
