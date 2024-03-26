@@ -1,7 +1,7 @@
 {
   "name": "@techni-tools/postman",
   "private": false,
-  "version": "1.6.1",
+  "version": "1.7.0",
   "type": "module",
   "main": "run.js",
   "publishConfig": {
