@@ -1,6 +1,7 @@
+import { useLocalStorage } from "@uidotdev/usehooks";
 import axios from "axios";
 import qs from "qs";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import Split from "react-split";
 
@@ -26,7 +27,11 @@ const createFormData = (entries: Entry<string | File>[]) => {
 };
 
 const Requester: React.FC<Props> = (props) => {
-  const { requester, onChange } = props;
+  const { initialRequester, onChange } = props;
+  const { id, data: initialData } = initialRequester;
+
+  const splitRef = useRef<Split>(null);
+
   const {
     mutate: sendRequest,
     cancel,
@@ -34,7 +39,7 @@ const Requester: React.FC<Props> = (props) => {
     data: response,
     error,
   } = useOptimisticMutation<PostmanResponse, any, RequestData>({
-    mutationKey: [],
+    mutationKey: [id],
     mutationFn: async (variables, { abortController }) => {
       const {
         url,
@@ -97,15 +102,13 @@ const Requester: React.FC<Props> = (props) => {
     },
   });
 
-  const form = useForm<RequestData>({
-    defaultValues: requester.data,
-  });
+  const form = useForm<RequestData>({ defaultValues: initialData });
   const { getValues } = form;
 
   const requestData = getValues();
 
   useEffect(() => {
-    onChange(requester.id, { ...requester, data: requestData });
+    onChange(id, { ...initialRequester, data: requestData });
   }, [JSON.stringify(requestData)]);
 
   return (
@@ -114,7 +117,9 @@ const Requester: React.FC<Props> = (props) => {
         style={{ height: "100%", overflow: "hidden" }}
         gutterSize={11}
         direction="vertical"
+        sizes={[60, 40]}
         minSize={[92, 32]}
+        ref={splitRef}
       >
         <Pane className="request-pane">
           <Request

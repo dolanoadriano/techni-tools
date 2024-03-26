@@ -1,11 +1,13 @@
 import {
   DefaultError,
   MutateFunction,
+  MutationKey,
   QueryClient,
   UseMutationOptions,
   UseMutationResult,
   useMutation,
 } from "@tanstack/react-query";
+import { useLocalStorage } from "@uidotdev/usehooks";
 import { useRef, useState } from "react";
 
 type Helper = {
@@ -14,6 +16,7 @@ type Helper = {
 
 interface UseOptimisticMutationOptions<TData, TError, TVariables>
   extends Omit<UseMutationOptions<TData, TError, TVariables>, "mutationFn"> {
+  mutationKey: MutationKey;
   mutationFn: (variables: TVariables, helper: Helper) => Promise<TData>;
 }
 
@@ -33,9 +36,18 @@ const useOptimisticMutation = <
   options: UseOptimisticMutationOptions<TData, TError, TVariables>,
   queryClient?: QueryClient
 ): UseOptimisticMutationResult<TData, TError, TVariables> => {
+  const key = options.mutationKey?.join("-");
   const abortControllerRef = useRef<AbortController | null>(null);
-  const [cachedData, setCachedData] = useState<TData | undefined>(undefined);
-  const [cachedError, setCachedError] = useState<TError | undefined>(undefined);
+  const [cachedData, setCachedData] = useLocalStorage<TData | null>(
+    `${key}-data`,
+    null
+  );
+  const [cachedError, setCachedError] = useLocalStorage<TError | null>(
+    `${key}-error`,
+    null
+  );
+
+  console.log(key);
 
   const mutateFnWithAbortController: MutateFunction<
     TData,
@@ -53,7 +65,7 @@ const useOptimisticMutation = <
     TVariables
   >["onSuccess"] = (...args) => {
     setCachedData(args[0]);
-    setCachedError(undefined);
+    setCachedError(null);
     options.onSuccess?.(...args);
   };
 
@@ -63,7 +75,7 @@ const useOptimisticMutation = <
     TVariables
   >["onError"] = (...args) => {
     setCachedError(args[0]);
-    setCachedData(undefined);
+    setCachedData(null);
     options.onError?.(...args);
   };
 

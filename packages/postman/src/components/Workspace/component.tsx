@@ -125,7 +125,7 @@ const WorkspaceComponent: React.FC<Props> = (props) => {
       {selectedRequester && (
         <RequesterComponent
           key={selectedRequester.id}
-          requester={selectedRequester}
+          initialRequester={selectedRequester}
           onChange={handleRequesterChange}
         ></RequesterComponent>
       )}
