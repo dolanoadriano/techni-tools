@@ -111,7 +111,7 @@ const Requester: React.FC<Props> = (props) => {
   return (
     <FormProvider {...form}>
       <Split
-        style={{ height: "100%" }}
+        style={{ height: "100%", overflow: "hidden" }}
         gutterSize={11}
         direction="vertical"
         minSize={[92, 32]}
